@@ -1,3 +1,6 @@
+
+![Banner do YouTube eSports Gamer Escuro Vermelho Preto](https://github.com/user-attachments/assets/538caa9c-ba91-47dd-818f-4364a427ba28)
+
 # PCP - SACACHO ⚙️🔨
 Desenvolvimento de um programa PCP (Programação e controle de produção) para atender as necessidades da empresa de confecção têxtil Sacacho, uma empresa voltada para o ramo de embalagens de ráfia.
 
