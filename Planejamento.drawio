@@ -1,9 +1,36 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0" version="24.7.17">
   <diagram name="Página-1" id="pSolwplHQKCP1GlWNstn">
-    <mxGraphModel>
+    <mxGraphModel dx="946" dy="575" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="Fz7rd7JIeiwYvd-5PQ1n-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Fz7rd7JIeiwYvd-5PQ1n-1" target="Fz7rd7JIeiwYvd-5PQ1n-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fz7rd7JIeiwYvd-5PQ1n-1" value="Cadastro" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Fz7rd7JIeiwYvd-5PQ1n-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Fz7rd7JIeiwYvd-5PQ1n-2" target="Fz7rd7JIeiwYvd-5PQ1n-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fz7rd7JIeiwYvd-5PQ1n-2" value="Login" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Fz7rd7JIeiwYvd-5PQ1n-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Fz7rd7JIeiwYvd-5PQ1n-3" target="Fz7rd7JIeiwYvd-5PQ1n-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fz7rd7JIeiwYvd-5PQ1n-3" value="Estoque" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Fz7rd7JIeiwYvd-5PQ1n-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Fz7rd7JIeiwYvd-5PQ1n-4" target="Fz7rd7JIeiwYvd-5PQ1n-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fz7rd7JIeiwYvd-5PQ1n-4" value="Ordem de Produção" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Fz7rd7JIeiwYvd-5PQ1n-5" value="Entrega" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
