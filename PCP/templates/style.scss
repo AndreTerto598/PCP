@@ -78,7 +78,15 @@ body {
 		border-radius: 30px;
 		font-weight: 600;
 	}
-	.footer {
+	.Cadastre-se {
+		display: flex;
+		font-size: 0.7em;
+		color: hsl(0deg 0% 37%);
+		gap: 14em;
+		padding-bottom: 10em;
+		span { cursor: pointer }
+	}
+	.Senha {
 		display: flex;
 		font-size: 0.7em;
 		color: hsl(0deg 0% 37%);

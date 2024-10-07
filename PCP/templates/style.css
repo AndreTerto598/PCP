@@ -99,14 +99,28 @@
     border-radius: 30px;
     font-weight: 600;
   }
-  .screen-1 .footer {
+  .footer{
     display: flex;
-    font-size: 0.7em;
-    color: #5e5e5e;
-    gap: 14em;
-    padding-bottom: 10em;
+    justify-content: space-between;
+    align-items: center;
   }
-  .screen-1 .footer span {
+  .screen-1 .Cadastre-se {
+    font-size: 1.0em;
+    color: #04b37e;
+    gap: 14em;
+    padding-bottom: 5em;
+  }
+  .screen-1 .Cadastre-se a {
+    cursor: pointer;
+  }
+
+  .screen-1 .Senha {
+    font-size: 1.0em;
+    color: #04b37e;
+    gap: 14em;
+    padding-bottom: 5em;
+  }
+  .screen-1 .Senha a {
     cursor: pointer;
   }
   
