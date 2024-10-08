@@ -61,16 +61,7 @@ form .input-box input{
 .input-box input:valid{
   border-color: #4070f4;
 }
-form .policy{
-  display: flex;
-  align-items: center;
-}
-form h3{
-  color: #707070;
-  font-size: 14px;
-  font-weight: 500;
-  margin-left: 10px;
-}
+
 .input-box.button input{
   color: #fff;
   letter-spacing: 1px;
@@ -80,18 +71,6 @@ form h3{
 }
 .input-box.button input:hover{
   background: #0e4bf1;
-}
-form .text h3{
- color: #333;
- width: 100%;
- text-align: center;
-}
-form .text h3 a{
-  color: #4070f4;
-  text-decoration: none;
-}
-form .text h3 a:hover{
-  text-decoration: underline;
 }
 .footer{
     display: flex;
