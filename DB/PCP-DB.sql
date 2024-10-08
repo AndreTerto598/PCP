@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "Cliente" (
+﻿CREATE TABLE IF NOT EXISTS "Cliente" (
 	"Id_Cliente" serial NOT NULL UNIQUE,
 	"Nome_Cliente" varchar(255) NOT NULL DEFAULT '100',
 	"Endereco_Cliente" varchar(255) NOT NULL DEFAULT '255',
@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS "Estoque" (
 
 CREATE TABLE IF NOT EXISTS "Usuario" (
 	"Id_Usuario" serial NOT NULL UNIQUE,
+	"Email_Usuario" varchar(255) NOT NULL DEFAULT '100',
 	"Nome_Usuario" varchar(255) NOT NULL DEFAULT '100',
 	"Senha_Usuario" varchar(255) NOT NULL DEFAULT '255',
 	PRIMARY KEY ("Id_Usuario")
@@ -105,10 +106,11 @@ ALTER TABLE "Produto" ADD CONSTRAINT "Produto_fk6" FOREIGN KEY ("Id_Fornecedor")
 
 ALTER TABLE "Ordem_Producao" ADD CONSTRAINT "Ordem_Producao_fk2" FOREIGN KEY ("Id_Produto") REFERENCES "Produto"("Id_Produto");
 
-ALTER TABLE "Ordem_Producao" ADD CONSTRAINT "Ordem_Producao_fk6" FOREIGN KEY ("Id_Usuario") REFERENCES "Usuario"("Id_Usuario");
 
 ALTER TABLE "Ordem_Producao" ADD CONSTRAINT "Ordem_Producao_fk14" FOREIGN KEY ("Id_Cliente") REFERENCES "Cliente"("Id_Cliente");
 
 ALTER TABLE "Entrega" ADD CONSTRAINT "Entrega_fk0" FOREIGN KEY ("Id_Cliente") REFERENCES "Cliente"("Id_Cliente");
 
 ALTER TABLE "Entrega" ADD CONSTRAINT "Entrega_fk7" FOREIGN KEY ("Id_Entregador") REFERENCES "Entregador"("Id_Entregador");
+
+DROP TABLE "Usuario";
