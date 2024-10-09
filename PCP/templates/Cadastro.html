@@ -6,12 +6,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Cadastro </title>
-    <link rel="stylesheet" href="/PCP/static/css/cadastro.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cadastro.css') }}">
 </head>
 
 <body>
     <div class="wrapper">
-        <img src="/PCP/static/image/sacacho_logo.png" alt="Logo da Sacacho" height="60"><br><br>
+        <img src="{{ url_for('static', filename = '/image/sacacho_logo.png') }}"  alt="Logo da Sacacho" height="60"><br><br>
         <h2>Cadastre-se</h2>
         <form action="/Cadastro" method="POST" id="formCadastro"> <!--Formulário de Cadastro-->
             <div class="input-box">
