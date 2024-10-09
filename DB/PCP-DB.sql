@@ -1,4 +1,16 @@
-﻿CREATE TABLE IF NOT EXISTS "Cliente" (
+﻿-- Database: "PCP"
+
+-- DROP DATABASE "PCP";
+
+CREATE DATABASE "PCP"
+  WITH OWNER = postgres
+       ENCODING = 'UTF8'
+       TABLESPACE = pg_default
+       LC_COLLATE = 'Portuguese_Brazil.1252'
+       LC_CTYPE = 'Portuguese_Brazil.1252'
+       CONNECTION LIMIT = -1;
+
+CREATE TABLE IF NOT EXISTS "Cliente" (
 	"Id_Cliente" serial NOT NULL UNIQUE,
 	"Nome_Cliente" varchar(255) NOT NULL DEFAULT '100',
 	"Endereco_Cliente" varchar(255) NOT NULL DEFAULT '255',
@@ -70,12 +82,11 @@ CREATE TABLE IF NOT EXISTS "Estoque" (
 	"Unidade_Medida" varchar(255) DEFAULT '10'
 );
 
-CREATE TABLE IF NOT EXISTS "Usuario" (
-	"Id_Usuario" serial NOT NULL UNIQUE,
-	"Email_Usuario" varchar(255) NOT NULL DEFAULT '100',
-	"Nome_Usuario" varchar(255) NOT NULL DEFAULT '100',
-	"Senha_Usuario" varchar(255) NOT NULL DEFAULT '255',
-	PRIMARY KEY ("Id_Usuario")
+CREATE TABLE usuario (
+    id SERIAL PRIMARY KEY,
+    usuario VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    senha VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "Entregador" (
@@ -106,11 +117,10 @@ ALTER TABLE "Produto" ADD CONSTRAINT "Produto_fk6" FOREIGN KEY ("Id_Fornecedor")
 
 ALTER TABLE "Ordem_Producao" ADD CONSTRAINT "Ordem_Producao_fk2" FOREIGN KEY ("Id_Produto") REFERENCES "Produto"("Id_Produto");
 
-
 ALTER TABLE "Ordem_Producao" ADD CONSTRAINT "Ordem_Producao_fk14" FOREIGN KEY ("Id_Cliente") REFERENCES "Cliente"("Id_Cliente");
 
 ALTER TABLE "Entrega" ADD CONSTRAINT "Entrega_fk0" FOREIGN KEY ("Id_Cliente") REFERENCES "Cliente"("Id_Cliente");
 
 ALTER TABLE "Entrega" ADD CONSTRAINT "Entrega_fk7" FOREIGN KEY ("Id_Entregador") REFERENCES "Entregador"("Id_Entregador");
 
-DROP TABLE "Usuario";
+

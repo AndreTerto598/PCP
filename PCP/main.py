@@ -1,5 +1,7 @@
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, url_for
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'TERTOPCP'
@@ -32,7 +34,10 @@ def processar_cadastro():
     if senha != confirmar_senha:
         return "As senhas não conferem! Tente novamente."
     
-    novo_usuario = Usuario(usuario=usuario, email=email, senha=senha)
+    senha_hash = generate_password_hash(senha)
+    novo_usuario = Usuario(usuario=usuario, email=email, senha=senha_hash)
+
+
 
     db.session.add(novo_usuario)
     db.session.commit()
@@ -40,11 +45,33 @@ def processar_cadastro():
     return f"Usuário {usuario} cadastrado com sucesso!"
 
 #Fim da parte de Cadastro
+
+#Início da página de login
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    return render_template('login.html')
+
+@app.route('/principal', methods = ['GET', 'POST'])
+def principal():
+    return render_template('principal.html')
+
+@app.route('/Login' , methods= ['POST'])
+def processar_login():
+    login_usuario = request.form['login_usuario']
+    login_senha = request.form['login_senha']
     
-    
+    usuario = Usuario.query.filter_by(usuario=login_usuario).first()
+
+    if usuario and check_password_hash(usuario.senha, login_senha):
+        return redirect(url_for('principal'))
+    else:
+        return"Usuário ou senha incorretos. Tente novamente."
 
 
 
+
+#Fim da página de Login
 
 if __name__ == '__main__':
     app.run(debug=True)
