@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, redirect, request, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
@@ -52,10 +52,6 @@ def processar_cadastro():
 def login():
     return render_template('login.html')
 
-@app.route('/principal', methods = ['GET', 'POST'])
-def principal():
-    return render_template('principal.html')
-
 @app.route('/Login' , methods= ['POST'])
 def processar_login():
     login_usuario = request.form['login_usuario']
@@ -64,14 +60,32 @@ def processar_login():
     usuario = Usuario.query.filter_by(usuario=login_usuario).first()
 
     if usuario and check_password_hash(usuario.senha, login_senha):
+        session['login_usuario'] = login_usuario
         return redirect(url_for('principal'))
     else:
-        return"Usuário ou senha incorretos. Tente novamente."
-
-
-
+        flash('Login Inválido')
+        return redirect(url_for('login'))
+    
+@app.route('/principal', methods = ['GET', 'POST'])
+def principal():
+    if 'login_usuario' not in session:
+        return redirect(url_for('login'))
+    return render_template('principal.html')
 
 #Fim da página de Login
+
+#Logout
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
+
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
