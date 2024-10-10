@@ -17,8 +17,8 @@ class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     usuario = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
-    senha = db.Column(db.String(100), nullable=False)
-#Modelo de Dados para o estoque
+    senha = db.Column(db.String(255), nullable=False)
+#Modelo de Dados para o estoque de Tecido
 class Estoque_tecido(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome_tela = db.Column(db.String(100), nullable=False)
@@ -30,6 +30,18 @@ class Estoque_tecido(db.Model):
         self.nome_tela = nome_tela
         self.quantidade_tela = quantidade_tela
         self.tipo_tela = tipo_tela
+        self.unidade_medida = unidade_medida
+#
+#Modelo de Dados para o estoque de Alças
+class Estoque_alca(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome_alca = db.Column(db.String(255), nullable=False)
+    quantidade_alca = db.Column(db.Integer, nullable=False)
+    unidade_medida = db.Column(db.String(50), nullable=False)
+
+    def __init__(self, nome_alca, quantidade_alca, unidade_medida):
+        self.nome_alca = nome_alca
+        self.quantidade_alca = quantidade_alca
         self.unidade_medida = unidade_medida
 #
 
@@ -149,6 +161,55 @@ def delete_item(id):
     flash('Item removido com sucesso!')
     return redirect(url_for('tecido'))
 
+#Página de Estoque de Alças
+
+@app.route('/alca')
+def alca():
+    alca = Estoque_alca.query.all()
+    return render_template('Estoque_alcas.html', itens=alca)
+
+#Adicionar Alça
+
+@app.route('/add_alca', methods=['POST'])
+def add_alca():
+    print(request.form)
+    nome_alca = request.form['nome_alca']
+    quantidade_alca = request.form['quantidade_alca']
+    unidade_medida = request.form['unidade_medida']
+
+    
+    nova_alca = Estoque_alca(nome_alca=nome_alca, quantidade_alca=quantidade_alca, unidade_medida=unidade_medida)
+    db.session.add(nova_alca)
+    db.session.commit()
+    
+    flash('Item adicionado com sucesso!')
+    return redirect(url_for('alca'))
+
+#Editar Alça
+
+@app.route('/edit_alca/<int:id>', methods=['POST'])
+def edit_alca(id):
+    item = Estoque_alca.query.get_or_404(id)
+    
+    item.nome_alca = request.form['nome_alca']
+    item.quantidade_alca = request.form['quantidade_alca']
+    item.unidade_medida = request.form['unidade_medida']
+    
+    db.session.commit()
+    
+    flash('Item atualizado com sucesso!')
+    return redirect(url_for('alca'))
+
+#Remover Alça
+
+@app.route('/delete_alca/<int:id>', methods=['POST'])
+def delete_alca(id):
+    item = Estoque_alca.query.get_or_404(id)
+    db.session.delete(item)
+    db.session.commit()
+    
+    flash('Item removido com sucesso!')
+    return redirect(url_for('alca'))
 
 
 
