@@ -1,21 +1,37 @@
 from flask import Flask, render_template, redirect, request, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer, String
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'TERTOPCP'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg://postgres:123@localhost/PCP'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
-#Integração do DB+ Flask pra salvar os dados do cadastro
+#Modelo de dados para o Cadastro
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     usuario = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     senha = db.Column(db.String(100), nullable=False)
+#Modelo de Dados para o estoque
+class Estoque_tecido(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome_tela = db.Column(db.String(100), nullable=False)
+    quantidade_tela = db.Column(db.Integer, nullable=False)
+    tipo_tela = db.Column(db.String(100), nullable=False)
+    unidade_medida = db.Column(db.String(50), nullable=False)
+
+    def __init__(self, nome_tela, quantidade_tela, tipo_tela, unidade_medida):
+        self.nome_tela = nome_tela
+        self.quantidade_tela = quantidade_tela
+        self.tipo_tela = tipo_tela
+        self.unidade_medida = unidade_medida
+#
 
     def __repr__(self):
         return f'<Usuario {self.usuario}>'
@@ -81,6 +97,57 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
+#Página de Estoque de Tecidos
+
+@app.route('/tecido')
+def tecido():
+    itens = Estoque_tecido.query.all()
+    return render_template('Estoque_tecido.html', itens=itens)
+
+# Adicionar item
+
+@app.route('/add_item', methods=['POST'])
+def add_item():
+    nome_tela = request.form['nome_tela']
+    quantidade_tela = request.form['quantidade_tela']
+    tipo_tela = request.form['tipo_tela']
+    unidade_medida = request.form['unidade_medida']
+
+    
+    novo_item = Estoque_tecido(nome_tela=nome_tela, quantidade_tela=quantidade_tela, tipo_tela=tipo_tela, unidade_medida=unidade_medida)
+    db.session.add(novo_item)
+    db.session.commit()
+    
+    flash('Item adicionado com sucesso!')
+    return redirect(url_for('tecido'))
+
+# Editar item
+
+@app.route('/edit_item/<int:id>', methods=['POST'])
+def edit_item(id):
+    item = Estoque_tecido.query.get_or_404(id)
+    
+    item.nome_tela = request.form['nome_tela']
+    item.quantidade_tela = request.form['quantidade_tela']
+    item.tipo_tela = request.form['tipo_tela']
+    item.unidade_medida = request.form['unidade_medida']
+    
+    db.session.commit()
+    
+    flash('Item atualizado com sucesso!')
+    return redirect(url_for('tecido'))
+
+
+# Remover item
+
+@app.route('/delete_item/<int:id>', methods=['POST'])
+def delete_item(id):
+    item = Estoque_tecido.query.get_or_404(id)
+    db.session.delete(item)
+    db.session.commit()
+    
+    flash('Item removido com sucesso!')
+    return redirect(url_for('tecido'))
 
 
 

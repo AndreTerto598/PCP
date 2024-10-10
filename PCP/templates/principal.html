@@ -12,7 +12,8 @@
     <title>Principal</title>
 
     <!-- Custom fonts for this template-->
-    <link href="{{ url_for('static', filename='vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet"
+        type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
@@ -31,9 +32,11 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url_for ('principal') }}">
-                <img src="{{ url_for('static', filename = '/image/sacola.png') }}" alt="Logo da Sacacho" height="40"><br><br>
-                <div class="sidebar-brand-text mx-3">Sacacho</div> 
+            <a class="sidebar-brand d-flex align-items-center justify-content-center"
+                href="{{ url_for ('principal') }}">
+                <img src="{{ url_for('static', filename = '/image/sacola.png') }}" alt="Logo da Sacacho"
+                    height="40"><br><br>
+                <div class="sidebar-brand-text mx-3">Sacacho</div>
             </a>
 
             <!-- Divider -->
@@ -81,7 +84,7 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Controle de Estoque:</h6>
-                        <a class="collapse-item" href="Estoque_tecido.html">Estoque de tecido</a>
+                        <a class="collapse-item" href="{{ url_for ('tecido') }}">Estoque de tecido</a>
                         <a class="collapse-item" href="Estoque_alcas.html">Estoque de Alças</a>
                         <a class="collapse-item" href="Estoque_acerto.html">Acerto de Estoque</a>
                     </div>
@@ -126,8 +129,8 @@
                     <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Pesquise por..."
-                                aria-label="Search" aria-describedby="basic-addon2">
+                            <input type="text" class="form-control bg-light border-0 small"
+                                placeholder="Pesquise por..." aria-label="Search" aria-describedby="basic-addon2">
                             <div class="input-group-append">
                                 <button class="btn btn-primary" type="button">
                                     <i class="fas fa-search fa-sm"></i>
@@ -195,7 +198,8 @@
                                 <h6 class="dropdown-header">
                                     Message Center
                                 </h6>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Ver todas as mensagens</a>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Ver todas as
+                                    mensagens</a>
                             </div>
                         </li>
 
@@ -205,7 +209,8 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ session['login_usuario'] }}</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ session['login_usuario']
+                                    }}</span>
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
