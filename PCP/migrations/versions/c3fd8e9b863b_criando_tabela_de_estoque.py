@@ -26,14 +26,8 @@ def upgrade():
     sa.Column('unidade_medida', sa.String(length=50), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
-    op.drop_table('Ordem_Producao')
-    op.drop_table('Entrega')
     op.drop_table('Estoque_tecido')
-    op.drop_constraint('Produto_fk6', 'Produto', type_='foreignkey')
     op.drop_table('Fornecedore')
-    op.drop_table('Produto')
-    op.drop_table('Cliente')
-    op.drop_table('Entregador')
     with op.batch_alter_table('usuario', schema=None) as batch_op:
         batch_op.alter_column('senha',
                existing_type=sa.VARCHAR(length=255),

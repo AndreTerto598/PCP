@@ -268,7 +268,7 @@
                                     {% for item in itens %}
                                     <tr>
                                         <td>{{ item.nome_tela }}</td>
-                                        <td>{{ item.quantidade_tela }}</td>
+                                        <td>{{ item.quantidade_tela_formatada }}</td>
                                         <td>{{ item.tipo_tela }}</td>
                                         <td>{{ item.unidade_medida }}</td>
                                         <td>
@@ -306,9 +306,8 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="editItemQuantity">Quantidade</label>
-                                                            <input type="number" class="form-control"
-                                                                name="quantidade_tela"
-                                                                value="{{ item.quantidade_tela }}" required>
+                                                            <input type="number" class="form-control" name="quantidade_tela" value="{{ item.quantidade_tela }}" required>
+                                                                
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="editItemPrice">Tipo de Tela</label>
