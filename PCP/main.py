@@ -207,7 +207,19 @@ def delete_item(id):
 @app.route('/alca')
 def alca():
     alca = Estoque_alca.query.all()
-    return render_template('Estoque_alcas.html', itens=alca)
+    itens_formatados = []
+
+    for item in alca:
+        item_formatado = {
+            'id': item.id,
+            'nome_alca': item.nome_alca,
+            'quantidade_alca': item.quantidade_alca,  # Mantenha o valor original aqui
+            'quantidade_alca_formatada': formatar_quantidade(item.quantidade_alca),  # Exibição formatada
+            'unidade_medida': item.unidade_medida,
+        }
+        itens_formatados.append(item_formatado)
+
+    return render_template('Estoque_alcas.html', itens=itens_formatados)
 
 #Adicionar Alça
 

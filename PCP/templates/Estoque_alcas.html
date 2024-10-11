@@ -68,7 +68,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ordens de produção:</h6>
                         <a class="collapse-item" href="{{ url_for ('Op_cadastro') }}"">Nova Ordem de Produção</a>
-                        <a class="collapse-item" href="Op_andamento.html">OP's em andamento</a>
+                        <a class=" collapse-item" href="Op_andamento.html">OP's em andamento</a>
                     </div>
                 </div>
             </li>
@@ -240,112 +240,130 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-<!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Estoque de Alças</h1>
-</div>
-<div class="container mt-5">
-    <h1 class="mb-4">Gerenciamento de Estoque</h1>
-    <div class="mb-3">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addItemModal">Cadastrar Alça</button>
-    </div>
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Estoque de Alças</h1>
+                    </div>
+                    <div class="container mt-5">
+                        <h1 class="mb-4">Gerenciamento de Estoque</h1>
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                data-target="#addItemModal">Cadastrar Alça</button>
+                        </div>
 
-    <!-- Exibição de Itens e Botões de Edição -->
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Nome da Alça</th>
-                    <th>Quantidade</th>
-                    <th>Unidade de Medida</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in itens %}
-                <tr>
-                    <td>{{ item.nome_alca }}</td>
-                    <td>{{ item.quantidade_alca }}</td>
-                    <td>{{ item.unidade_medida }}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editItemModal{{ item.id }}">
-                            <i class="fas fa-edit"></i> Editar
-                        </button>
-                        <form action="{{ url_for('delete_alca', id=item.id) }}" method="POST" style="display:inline;">
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash"></i> Remover
-                            </button>
-                        </form>
-                    </td>
-                </tr>
+                        <!-- Exibição de Itens e Botões de Edição -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nome da Alça</th>
+                                        <th>Quantidade</th>
+                                        <th>Unidade de Medida</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in itens %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>{{ item.nome_alca }}</td>
+                                        <td>{{ item.quantidade_alca_formatada }}</td>
+                                        <td>{{ item.unidade_medida }}</td>
+                                        <td>
+                                            <!-- Botão para abrir o modal de edição -->
+                                            <button type="button" class="btn btn-warning" data-toggle="modal"
+                                                data-target="#editItemModal{{ item.id }}">
+                                                Editar
+                                            </button>
+                                            <!-- Botão de remover (supondo que você tenha uma rota para isso) -->
+                                            <form action="{{ url_for('delete_alca', id=item.id) }}" method="POST"
+                                                style="display:inline;">
+                                                <button type="submit" class="btn btn-danger">Remover</button>
+                                            </form>
+                                        </td>
+                                    </tr>
 
-                <!-- Modal para Editar Item -->
-                <div class="modal fade" id="editItemModal{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="editItemModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="editItemModalLabel">Editar Item</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="{{ url_for('edit_alca', id=item.id) }}" method="POST">
-                                    <div class="form-group">
-                                        <label for="editItemName">Nome da Alça</label>
-                                        <input type="text" class="form-control" name="nome_alca" value="{{ item.nome_alca }}" required>
+                                    <!-- Modal para Editar Item -->
+                                    <div class="modal fade" id="editItemModal{{ item.id }}" tabindex="-1" role="dialog"
+                                        aria-labelledby="editItemModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editItemModalLabel">Editar Item</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ url_for('edit_alca', id=item.id) }}" method="POST">
+                                                        <div class="form-group">
+                                                            <label for="editItemName">Nome da Alça</label>
+                                                            <input type="text" class="form-control" name="nome_alca"
+                                                                value="{{ item.nome_alca }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="editItemQuantity">Quantidade</label>
+                                                            <input type="number" class="form-control"
+                                                                name="quantidade_alca"
+                                                                value="{{ item.quantidade_alca }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="editItemUnit">Unidade de Medida</label>
+                                                            <input type="text" class="form-control"
+                                                                name="unidade_medida" value="{{ item.unidade_medida }}"
+                                                                required>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Salvar
+                                                            Alterações</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="editItemQuantity">Quantidade</label>
-                                        <input type="number" class="form-control" name="quantidade_alca" value="{{ item.quantidade_alca }}" required>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Modal para Adicionar Item -->
+                        <div class="modal fade" id="addItemModal" tabindex="-1" role="dialog"
+                            aria-labelledby="addItemModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addItemModalLabel">Cadastrar Alça</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="editItemUnit">Unidade de Medida</label>
-                                        <input type="text" class="form-control" name="unidade_medida" value="{{ item.unidade_medida }}" required>
+                                    <div class="modal-body">
+                                        <form action="{{ url_for('add_alca') }}" method="POST">
+                                            <div class="form-group">
+                                                <label for="modal_nome_alca">Nome da Alça</label>
+                                                <input type="text" class="form-control" id="modal_nome_alca"
+                                                    name="nome_alca" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="modal_quantidade_alca">Quantidade</label>
+                                                <input type="number" class="form-control" id="modal_quantidade_alca"
+                                                    name="quantidade_alca" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="modal_unidade_medida">Unidade de medida</label>
+                                                <input type="text" class="form-control" id="modal_unidade_medida"
+                                                    name="unidade_medida" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Adicionar</button>
+                                        </form>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
 
-    <!-- Modal para Adicionar Item -->
-    <div class="modal fade" id="addItemModal" tabindex="-1" role="dialog" aria-labelledby="addItemModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addItemModalLabel">Cadastrar Alça</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ url_for('add_alca') }}" method="POST">
-                        <div class="form-group">
-                            <label for="modal_nome_alca">Nome da Alça</label>
-                            <input type="text" class="form-control" id="modal_nome_alca" name="nome_alca" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="modal_quantidade_alca">Quantidade</label>
-                            <input type="number" class="form-control" id="modal_quantidade_alca" name="quantidade_alca" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="modal_unidade_medida">Unidade de medida</label>
-                            <input type="text" class="form-control" id="modal_unidade_medida" name="unidade_medida" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Adicionar</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-                </div>
                 <!-- /.container-fluid -->
             </div>
             <!-- End of Main Content -->
@@ -396,36 +414,36 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
     <!-- Bootstrap JavaScript -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
+
     <!-- Bootstrap core JavaScript-->
     <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    
+
     <!-- Core plugin JavaScript-->
     <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-    
+
     <!-- Custom scripts for all pages-->
     <script src="{{ url_for('static', filename='js/sb-admin-2.min.js') }}"></script>
-    
+
     <!-- Page level plugins -->
     <script src="{{ url_for('static', filename='vendor/chart.js/Chart.min.js') }}"></script>
-    
+
     <!-- Page level custom scripts -->
     <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js') }}"></script>
-    
+
     <script>
         function addItem() {
             // Lógica para adicionar item
             $('#addItemModal').modal('hide');
             alert('Item adicionado com sucesso!');
         }
-    
+
         function editItem() {
             // Lógica para editar item
             $('#editItemModal').modal('hide');
             alert('Item editado com sucesso!');
         }
-    
+
         function removeItem(id) {
             // Lógica para remover item
             alert('Item ' + id + ' removido com sucesso!');
