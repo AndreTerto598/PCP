@@ -101,7 +101,7 @@ def downgrade():
     op.create_table('Estoque_tecido',
     sa.Column('id', sa.INTEGER(), autoincrement=True, nullable=False),
     sa.Column('nome_tela', sa.VARCHAR(length=255), autoincrement=False, nullable=False),
-    sa.Column('quantidade_tela', sa.BIGINT(), autoincrement=False, nullable=False),
+    sa.Column('quantidade_tela', sa.INTEGER(), autoincrement=False, nullable=False),
     sa.Column('tipo_tela', sa.VARCHAR(length=255), autoincrement=False, nullable=False),
     sa.Column('unidade_medida', sa.VARCHAR(length=2), autoincrement=False, nullable=False),
     sa.PrimaryKeyConstraint('id', name='Estoque_tecido_pkey')

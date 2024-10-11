@@ -111,10 +111,27 @@ def logout():
 
 #Página de Estoque de Tecidos
 
+# Função para formatar a quantidade
+def formatar_quantidade(quantidade):
+    return f"{quantidade:,}".replace(',', '.')
+
 @app.route('/tecido')
 def tecido():
-    itens = Estoque_tecido.query.all()
-    return render_template('Estoque_tecido.html', itens=itens)
+    itens = Estoque_tecido.query.all()  # Recupera todos os itens do banco de dados
+    itens_formatados = []  # Inicializa uma lista para os itens formatados
+
+    for item in itens:
+        # Aplica a formatação na quantidade
+        item_formatado = {
+            'id': item.id,
+            'nome_tela': item.nome_tela,
+            'quantidade_tela': formatar_quantidade(item.quantidade_tela),
+            'tipo_tela': item.tipo_tela,
+            'unidade_medida': item.unidade_medida,
+        }
+        itens_formatados.append(item_formatado)  # Adiciona o item formatado à lista
+
+    return render_template('Estoque_tecido.html', itens=itens_formatados)
 
 # Adicionar item
 
@@ -144,6 +161,7 @@ def edit_item(id):
     item.tipo_tela = request.form['tipo_tela']
     item.unidade_medida = request.form['unidade_medida']
     
+
     db.session.commit()
     
     flash('Item atualizado com sucesso!')

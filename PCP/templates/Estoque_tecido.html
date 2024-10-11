@@ -23,7 +23,7 @@
 
 </head>
 
-<body id="page-top">
+<body id="page-top" class="estoque">
 
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -230,131 +230,134 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-<!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Estoque de Tecidos</h1>
-</div>
-<div class="container mt-5">
-    <h1 class="mb-4">Gerenciamento de Estoque</h1>
-    <div class="mb-3">
-        <button type="button" class="btn btn-primary" data-toggle="modal"
-            data-target="#addItemModal">Cadastrar Tela</button>
-    </div>
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Estoque de Tecidos</h1>
+                    </div>
 
-    <!-- Exibição de Itens e Botões de Edição -->
-    {% for item in itens %}
-    <div class="item">
-        <h5>{{ item.nome_tela }}</h5>
-        <p>Quantidade: {{ item.quantidade_tela }}</p>
-        <p>Tipo: {{ item.tipo_tela }}</p>
-        <p>Unidade de Medida: {{ item.unidade_medida }}</p>
-
-        <button type="button" class="btn btn-warning" data-toggle="modal"
-            data-target="#editItemModal{{ item.id }}">Editar</button>
-
-        <!-- Formulário para Remover Item -->
-        <form action="{{ url_for('delete_item', id=item.id) }}" method="POST" style="display:inline;">
-            <button type="submit" class="btn btn-danger btn-sm">Remover</button>
-        </form>
-    </div>
-
-    <!-- Modal para Editar Item -->
-    <div class="modal fade" id="editItemModal{{ item.id }}" tabindex="-1" role="dialog"
-        aria-labelledby="editItemModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editItemModalLabel">Editar Item</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ url_for('edit_item', id=item.id) }}" method="POST">
-                        <div class="form-group">
-                            <label for="editItemName">Nome da Tela</label>
-                            <input type="text" class="form-control" name="nome_tela" value="{{ item.nome_tela }}" required>
+                    <div class="container mt-5">
+                        <h1 class="mb-4">Gerenciamento de Estoque</h1>
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                data-target="#addItemModal">Cadastrar Tela</button>
                         </div>
-                        <div class="form-group">
-                            <label for="editItemQuantity">Quantidade</label>
-                            <input type="number" class="form-control" name="quantidade_tela" value="{{ item.quantidade_tela }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="editItemPrice">Tipo de Tela</label>
-                            <input type="text" class="form-control" name="tipo_tela" value="{{ item.tipo_tela }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="editItemUnit">Unidade de Medida</label>
-                            <input type="text" class="form-control" name="unidade_medida" value="{{ item.unidade_medida }}" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
 
-    <!-- Modal para Adicionar Item -->
-    <div class="modal fade" id="addItemModal" tabindex="-1" role="dialog"
-        aria-labelledby="addItemModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addItemModalLabel">Cadastrar Tela</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ url_for('add_item') }}" method="POST">
-                        <div class="form-group">
-                            <label for="modal_nome_tela">Nome da Tela</label>
-                            <input type="text" class="form-control" id="modal_nome_tela" name="nome_tela" required>
+                        <!-- Exibição de Itens e Botões de Edição -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Nome da Tela</th>
+                                        <th>Quantidade</th>
+                                        <th>Tipo</th>
+                                        <th>Unidade de Medida</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in itens %}
+                                    <tr>
+                                        <td>{{ item.nome_tela }}</td>
+                                        <td>{{ item.quantidade_tela }}</td>
+                                        <td>{{ item.tipo_tela }}</td>
+                                        <td>{{ item.unidade_medida }}</td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm" data-toggle="modal"
+                                                data-target="#editItemModal{{ item.id }}">
+                                                <i class="fas fa-edit"></i> Editar
+                                            </button>
+                                            <form action="{{ url_for('delete_item', id=item.id) }}" method="POST" style="display:inline;">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash"></i> Remover
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                        
+                                    <!-- Modal para Editar Item (mantém o modal como no código original) -->
+                                    <div class="modal fade" id="editItemModal{{ item.id }}" tabindex="-1" role="dialog"
+                                        aria-labelledby="editItemModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editItemModalLabel">Editar Item</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ url_for('edit_item', id=item.id) }}" method="POST">
+                                                        <div class="form-group">
+                                                            <label for="editItemName">Nome da Tela</label>
+                                                            <input type="text" class="form-control" name="nome_tela"
+                                                                value="{{ item.nome_tela }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="editItemQuantity">Quantidade</label>
+                                                            <input type="number" class="form-control" name="quantidade_tela"
+                                                                value="{{ item.quantidade_tela }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="editItemPrice">Tipo de Tela</label>
+                                                            <input type="text" class="form-control" name="tipo_tela"
+                                                                value="{{ item.tipo_tela }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="editItemUnit">Unidade de Medida</label>
+                                                            <input type="text" class="form-control" name="unidade_medida"
+                                                                value="{{ item.unidade_medida }}" required>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="form-group">
-                            <label for="modal_quantidade_tela">Quantidade</label>
-                            <input type="number" class="form-control" id="modal_quantidade_tela" name="quantidade_tela" required>
+
+                        <!-- Modal para Adicionar Item -->
+                        <div class="modal fade" id="addItemModal" tabindex="-1" role="dialog"
+                            aria-labelledby="addItemModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addItemModalLabel">Cadastrar Tela</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ url_for('add_item') }}" method="POST">
+                                            <div class="form-group">
+                                                <label for="modal_nome_tela">Nome da Tela</label>
+                                                <input type="text" class="form-control" id="modal_nome_tela"
+                                                    name="nome_tela" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="modal_quantidade_tela">Quantidade</label>
+                                                <input type="number" class="form-control" id="modal_quantidade_tela"
+                                                    name="quantidade_tela" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="modal_tipo_tela">Tipo de Tela</label>
+                                                <input type="text" class="form-control" id="modal_tipo_tela"
+                                                    name="tipo_tela" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="modal_unidade_medida">Unidade de medida</label>
+                                                <input type="text" class="form-control" id="modal_unidade_medida"
+                                                    name="unidade_medida" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Adicionar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="modal_tipo_tela">Tipo de Tela</label>
-                            <input type="text" class="form-control" id="modal_tipo_tela" name="tipo_tela" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="modal_unidade_medida">Unidade de medida</label>
-                            <input type="text" class="form-control" id="modal_unidade_medida" name="unidade_medida" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Adicionar</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-                    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
-                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-                    <script>
-                        function addItem() {
-                            // Lógica para adicionar item
-                            $('#addItemModal').modal('hide');
-                            alert('Item adicionado com sucesso!');
-                        }
-
-                        function editItem() {
-                            // Lógica para editar item
-                            $('#editItemModal').modal('hide');
-                            alert('Item editado com sucesso!');
-                        }
-
-                        function removeItem(id) {
-                            // Lógica para remover item
-                            alert('Item ' + id + ' removido com sucesso!');
-                        }
-                    </script>
-
-
+                    </div>
                 </div>
                 <!-- /.container-fluid -->
             </div>
@@ -400,6 +403,28 @@
             </div>
         </div>
     </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function addItem() {
+            // Lógica para adicionar item
+            $('#addItemModal').modal('hide');
+            alert('Item adicionado com sucesso!');
+        }
+
+        function editItem() {
+            // Lógica para editar item
+            $('#editItemModal').modal('hide');
+            alert('Item editado com sucesso!');
+        }
+
+        function removeItem(id) {
+            // Lógica para remover item
+            alert('Item ' + id + ' removido com sucesso!');
+        }
+    </script>
 
     <!-- Bootstrap core JavaScript-->
     <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
