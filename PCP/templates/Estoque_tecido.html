@@ -67,7 +67,7 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ordens de produção:</h6>
-                        <a class="collapse-item" href="Op_finalizada.html">Nova Ordem de Produção</a>
+                        <a class="collapse-item" href="{{ url_for ('Op_cadastro') }}">Nova Ordem de Produção</a>
                         <a class="collapse-item" href="Op_andamento.html">OP's em andamento</a>
                     </div>
                 </div>
@@ -226,6 +226,17 @@
 
                 </nav>
                 <!-- End of Topbar -->
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="container">
+                    <div class="alert alert-success">
+                        {% for message in messages %}
+                        {{ message }}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                {% endwith %}
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">

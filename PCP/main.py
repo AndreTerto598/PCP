@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from flask_migrate import Migrate
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'TERTOPCP'
@@ -43,10 +44,27 @@ class Estoque_alca(db.Model):
         self.nome_alca = nome_alca
         self.quantidade_alca = quantidade_alca
         self.unidade_medida = unidade_medida
-#
+
+# Modelo de Dados para Cadastro de Pedidos
+class PedidoCliente(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome_cliente = db.Column(db.String(255), nullable=False)
+    produto = db.Column(db.String(255), nullable=False)
+    data_emissao = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    data_entrega = db.Column(db.DateTime, nullable=False)
+    entregador = db.Column(db.String(100), nullable=False)
+    emissor_pedido = db.Column(db.String(100), nullable=False)
+    tamanho = db.Column(db.String(50), nullable=False)
+    tela = db.Column(db.String(100), nullable=False)
+    alca = db.Column(db.String(100), nullable=False)
+    estampa = db.Column(db.String(255), nullable=False)
+    quantidade = db.Column(db.Integer, nullable=False)
+    quantidade_volumes = db.Column(db.Integer, nullable=False)
+    observacao = db.Column(db.Text, nullable=True)
 
     def __repr__(self):
         return f'<Usuario {self.usuario}>'
+        
 
 @app.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
@@ -80,7 +98,7 @@ def processar_cadastro():
 def login():
     return render_template('login.html')
 
-@app.route('/Login' , methods= ['POST'])
+@app.route('/Login', methods=['POST'])
 def processar_login():
     login_usuario = request.form['login_usuario']
     login_senha = request.form['login_senha']
@@ -91,8 +109,8 @@ def processar_login():
         session['login_usuario'] = login_usuario
         return redirect(url_for('principal'))
     else:
-        flash('Login Inválido')
-        return redirect(url_for('login'))
+        flash('Login Inválido', 'error')
+        return render_template('login.html', login_invalido=True)
     
 @app.route('/principal', methods = ['GET', 'POST'])
 def principal():
@@ -228,6 +246,52 @@ def delete_alca(id):
     
     flash('Item removido com sucesso!')
     return redirect(url_for('alca'))
+
+
+# Rota para processar o cadastro de pedidos
+@app.route('/add_pedido', methods=['POST'])
+def add_pedido():
+    nome_cliente = request.form['nome_cliente']
+    produto = request.form['produto']
+    data_emissao = datetime.strptime(request.form['data_emissao'], '%Y-%m-%d')
+    data_entrega = datetime.strptime(request.form['data_entrega'], '%Y-%m-%d')
+    entregador = request.form['entregador']
+    emissor_pedido = request.form['emissor_pedido']
+    tamanho = request.form['tamanho']
+    tela = request.form['tela']
+    alca = request.form['alca']
+    estampa = request.form['estampa']
+    quantidade = request.form['quantidade']
+    quantidade_volumes = request.form['quantidade_volumes']
+    observacao = request.form['observacao']
+
+    novo_pedido = PedidoCliente(
+        nome_cliente=nome_cliente,
+        produto=produto,
+        data_emissao=data_emissao,
+        data_entrega=data_entrega,
+        entregador=entregador,
+        emissor_pedido=emissor_pedido,
+        tamanho=tamanho,
+        tela=tela,
+        alca=alca,
+        estampa=estampa,
+        quantidade=quantidade,
+        quantidade_volumes=quantidade_volumes,
+        observacao=observacao
+    )
+
+    db.session.add(novo_pedido)
+    db.session.commit()
+    flash('Pedido cadastrado com sucesso!')
+    return redirect(url_for('Op_cadastro'))
+
+# Rota para exibir o formulário de cadastro de pedidos
+@app.route('/Op_cadastro', methods=['GET', 'POST'])
+def Op_cadastro():
+    return render_template('Op_cadastro.html')
+
+
 
 
 
