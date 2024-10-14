@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, request, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Float, update
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from flask_migrate import Migrate
@@ -19,6 +19,10 @@ class Usuario(db.Model):
     usuario = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     senha = db.Column(db.String(255), nullable=False)
+
+def __repr__(self):
+        return f'<Usuario {self.usuario}>'
+
 #Modelo de Dados para o estoque de Tecido
 class Estoque_tecido(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -57,13 +61,17 @@ class PedidoCliente(db.Model):
     tamanho = db.Column(db.String(50), nullable=False)
     tela = db.Column(db.String(100), nullable=False)
     alca = db.Column(db.String(100), nullable=False)
+    medida_alca = db.Column(db.Float, nullable=False)
     estampa = db.Column(db.String(255), nullable=False)
     quantidade = db.Column(db.Integer, nullable=False)
     quantidade_volumes = db.Column(db.Integer, nullable=False)
     observacao = db.Column(db.Text, nullable=True)
+    status = db.Column(db.String(50), nullable=False, default='andamento')
 
     def __repr__(self):
-        return f'<Usuario {self.usuario}>'
+        return f'<PedidoCliente {self.nome_cliente}>'
+
+    
         
 
 @app.route('/cadastro', methods=['GET', 'POST'])
@@ -277,6 +285,7 @@ def add_pedido():
     tamanho = request.form['tamanho']
     tela = request.form['tela']
     alca = request.form['alca']
+    medida_alca = request.form['medida_alca']
     estampa = request.form['estampa']
     quantidade = request.form['quantidade']
     quantidade_volumes = request.form['quantidade_volumes']
@@ -292,6 +301,7 @@ def add_pedido():
         tamanho=tamanho,
         tela=tela,
         alca=alca,
+        medida_alca=medida_alca,
         estampa=estampa,
         quantidade=quantidade,
         quantidade_volumes=quantidade_volumes,
@@ -301,7 +311,7 @@ def add_pedido():
     db.session.add(novo_pedido)
     db.session.commit()
     flash('Pedido cadastrado com sucesso!')
-    return redirect(url_for('Op_cadastro'))
+    return redirect(url_for('Op_andamento'))
 
 # Rota para exibir o formulário de cadastro de pedidos
 @app.route('/Op_cadastro', methods=['GET', 'POST'])
@@ -309,6 +319,20 @@ def Op_cadastro():
     return render_template('Op_cadastro.html')
 
 
+#Rota para exibir os pedidos em andamento
+@app.route('/Op_andamento')
+def Op_andamento():
+    pedidos = PedidoCliente.query.filter_by(status='andamento').all()
+    return render_template('Op_andamento.html', pedidos=pedidos)
+
+#Rota para finalizar pedido
+@app.route('/finalizar_pedido/<int:id>', methods=['POST'])
+def finalizar_pedido(id):
+    # Aqui você implementa a lógica para finalizar o pedido, por exemplo:
+    pedido = PedidoCliente.query.get_or_404(id)
+    pedido.status = 'finalizado'
+    db.session.commit()
+    return redirect(url_for('Op_andamento'))
 
 
 

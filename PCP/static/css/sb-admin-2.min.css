@@ -11008,7 +11008,18 @@ a:focus {
 .container-sm,
 .container-xl {
     padding-left: 1.5rem;
-    padding-right: 1.5rem
+    padding-right: 1.5rem;
+    padding-top: 0; /* Remove padding superior */
+    margin-top: 10px; /* Adiciona um espaço superior, ajuste conforme necessário */
+}
+.container-pedido {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-grow: 1;
 }
 
 .scroll-to-top {

@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Principal</title>
+    <title>Cadastro de pedidos</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ url_for('static', filename='vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet"
@@ -67,8 +67,8 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ordens de produção:</h6>
-                        <a class="collapse-item" href="Op_finalizada.html">Nova Ordem de Produção</a>
-                        <a class="collapse-item" href="Op_andamento.html">OP's em andamento</a>
+                        <a class="collapse-item" href="{{ url_for ('Op_cadastro') }}">Nova Ordem de Produção</a>
+                        <a class="collapse-item" href="{{ url_for ('Op_andamento') }}">OP's em andamento</a>
                     </div>
                 </div>
             </li>
@@ -286,6 +286,10 @@
                     <div class="form-group">
                         <label for="alca">Alça</label>
                         <input type="text" class="form-control" id="alca" name="alca">
+                    </div>
+                    <div class="form-group">
+                        <label for="medida_alca">Medida da Alça (cm)</label>
+                        <input type="number" class="form-control" id="medida_alca" name="medida_alca" required>
                     </div>
 
                     <div class="form-group">

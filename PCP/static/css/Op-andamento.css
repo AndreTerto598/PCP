@@ -1,0 +1,12 @@
+
+    
+    .container-pedido {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex-grow: 1;
+    }
+    .table-responsive {
+        margin-top: 20px;
+    }
