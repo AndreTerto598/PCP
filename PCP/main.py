@@ -328,12 +328,28 @@ def Op_andamento():
 #Rota para finalizar pedido
 @app.route('/finalizar_pedido/<int:id>', methods=['POST'])
 def finalizar_pedido(id):
-    # Aqui você implementa a lógica para finalizar o pedido, por exemplo:
     pedido = PedidoCliente.query.get_or_404(id)
     pedido.status = 'finalizado'
     db.session.commit()
     return redirect(url_for('Op_andamento'))
 
+
+#Rota de Pedidos Finalizados
+@app.route('/Op_finalizada', methods=['GET', 'POST'])
+def Op_finalizada():
+    search_query = request.args.get('search', '')
+    page = request.args.get('page', 1, type=int)  # Certifique-se de obter a página da requisição
+
+    # Filtrar pedidos com status 'finalizado'
+    if search_query:
+        pedidos = PedidoCliente.query.filter(
+            PedidoCliente.status == 'finalizado',
+            PedidoCliente.nome_cliente.ilike(f'%{search_query}%')
+        ).paginate(page=page, per_page=10)
+    else:
+        pedidos = PedidoCliente.query.filter_by(status='finalizado').paginate(page=page, per_page=10)
+
+    return render_template('Op_finalizada.html', pedidos=pedidos, search_query=search_query)
 
 
 

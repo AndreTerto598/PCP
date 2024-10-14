@@ -69,6 +69,7 @@
                         <h6 class="collapse-header">Ordens de produção:</h6>
                         <a class="collapse-item" href="{{ url_for ('Op_cadastro') }}">Nova Ordem de Produção</a>
                         <a class="collapse-item" href="{{ url_for ('Op_andamento') }}">OP's em andamento</a>
+                        <a class="collapse-item" href="{{ url_for ('Op_finalizada') }}">OP's Finalizadas</a>
                     </div>
                 </div>
             </li>
@@ -238,6 +239,7 @@
                                     <tr>
                                         <th>Cliente</th>
                                         <th>Produto</th>
+                                        <th>Quantidade</th>
                                         <th>Data de Emissão</th>
                                         <th>Data de Entrega</th>
                                         <th>Status</th>
@@ -249,12 +251,14 @@
                                     <tr>
                                         <td>{{ pedido.nome_cliente }}</td>
                                         <td>{{ pedido.produto }}</td>
+                                        <td>{{ pedido.quantidade}}</td>
                                         <td>{{ pedido.data_emissao.strftime('%d/%m/%Y') }}</td>
                                         <td>{{ pedido.data_entrega.strftime('%d/%m/%Y') }}</td>
                                         <td>{{ pedido.status }}</td>
                                         <td>
-                                            <a href="{{ url_for('finalizar_pedido', id=pedido.id) }}"
-                                                class="btn btn-success btn-sm">Finalizar</a>
+                                            <form action="{{ url_for('finalizar_pedido', id=pedido.id) }}" method="POST"
+                                                style="display:inline;">
+                                                <button type="submit" class="btn btn-success">Finalizar</button>
                                         </td>
                                     </tr>
                                     {% endfor %}
