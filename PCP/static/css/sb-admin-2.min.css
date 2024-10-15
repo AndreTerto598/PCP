@@ -88,9 +88,12 @@ hr {
     height: 0;
     overflow: visible
 }
-h1, h5 {
+
+h1,
+h5 {
     font-weight: 500;
 }
+
 h2,
 h3,
 h4,
@@ -246,7 +249,8 @@ label {
 }
 
 button {
-    border-radius: 0
+    margin-top: 15px; /* Adicionando espaço acima dos botões */
+    margin-bottom: 15px;
 }
 
 button:focus:not(:focus-visible) {
@@ -261,7 +265,8 @@ textarea {
     margin: 0;
     font-family: inherit;
     font-size: inherit;
-    line-height: inherit
+    line-height: inherit;
+    margin-bottom: 15px;
 }
 
 button,
@@ -2280,8 +2285,9 @@ textarea.form-control {
 }
 
 .form-group {
-    margin-bottom: 1rem
+    margin-bottom: 25px; /* Aumentando o espaço entre os campos do formulário */
 }
+
 
 .form-text {
     display: block;
@@ -2371,6 +2377,16 @@ textarea.form-control {
 .was-validated :valid~.valid-tooltip {
     display: block
 }
+
+/* Estilo para espaçar mais os formulários */
+.form-container {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    /* Adicionando uma borda mais visível */
+    border-radius: 5px; /* Bordas arredondadas */
+}
+
 
 .form-control.is-valid,
 .was-validated .form-control:valid {
@@ -2599,7 +2615,7 @@ textarea.form-control.is-invalid {
         flex: 0 0 auto;
         flex-flow: row wrap;
         align-items: center;
-        margin-bottom: 0
+        margin-bottom: 15px; /* Aumentando o espaço entre os grupos de formulário */
     }
 
     .form-inline .form-control {
@@ -11009,10 +11025,14 @@ a:focus {
 .container-xl {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
-    padding-top: 0; /* Remove padding superior */
-    margin-top: 10px; /* Adiciona um espaço superior, ajuste conforme necessário */
+    padding-top: 0;
+    /* Remove padding superior */
+    margin-top: 10px;
+    /* Adiciona um espaço superior, ajuste conforme necessário */
+    padding: 20px;
 }
-.container-pedido {
+
+.tab-content  {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
     min-height: 100vh;
@@ -11791,7 +11811,7 @@ a:focus {
     .sidebar .sidebar-brand .sidebar-brand-text {
         display: inline;
         font-size: 24px !important;
-        
+
     }
 
     .sidebar .sidebar-heading {

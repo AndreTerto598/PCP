@@ -273,7 +273,7 @@ def delete_alca(id):
     return redirect(url_for('alca'))
 
 
-# Rota para processar o cadastro de pedidos
+# Rota para processar o cadastro de Sacos e Bolsas
 @app.route('/add_pedido', methods=['POST'])
 def add_pedido():
     nome_cliente = request.form['nome_cliente']
@@ -312,6 +312,46 @@ def add_pedido():
     db.session.commit()
     flash('Pedido cadastrado com sucesso!')
     return redirect(url_for('Op_andamento'))
+
+#Rota para Cadastro de Big Bags
+@app.route('/add_bigbag', methods=['POST'])
+def add_bigbag():
+    # Obtendo os dados do formulário de Big Bags
+    nome_cliente = request.form['nome_cliente']
+    produto = request.form['produto']
+    data_emissao = request.form['data_emissao']
+    data_entrega = request.form['data_entrega']
+    entregador = request.form['entregador']
+    emissor_pedido = request.form['emissor_pedido']
+    ficha_tecnica = request.form['ficha_tecnica']
+    estampa = request.form['estampa']
+    quantidade = request.form['quantidade']
+    quantidade_volumes = request.form['quantidade_volumes']
+    observacao = request.form['observacao']
+
+    # Criar uma nova instância de PedidoCliente
+    novo_pedido_bigbag = PedidoCliente(
+        nome_cliente=nome_cliente,
+        produto=produto,
+        data_emissao=data_emissao,
+        data_entrega=data_entrega,
+        entregador=entregador,
+        emissor_pedido=emissor_pedido,
+        ficha_tecnica=ficha_tecnica,
+        estampa=estampa,
+        quantidade=quantidade,
+        quantidade_volumes=quantidade_volumes,
+        observacao=observacao,
+        status='em andamento'  # Definir status inicial como 'em andamento'
+    )
+
+    # Adicionar o pedido ao banco de dados
+    db.session.add(novo_pedido_bigbag)
+    db.session.commit()
+
+    # Exibir mensagem de sucesso
+    flash('Pedido de Big Bags cadastrado com sucesso!')
+    return redirect(url_for('Op_pedidos'))
 
 # Rota para exibir o formulário de cadastro de pedidos
 @app.route('/Op_cadastro', methods=['GET', 'POST'])

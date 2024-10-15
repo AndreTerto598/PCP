@@ -241,96 +241,176 @@
 
 
 
-            <div class="container mt-5">
-                <h1 class="mb-4">Cadastro de Pedido</h1>
-                <form action="{{ url_for('add_pedido') }}" method="POST">
-                    <div class="form-group">
-                        <label for="nome_cliente">Nome do Cliente</label>
-                        <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" required>
-                    </div>
+            <!-- Botões para alternar entre os formulários -->
+            <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="sacos-tab" data-toggle="tab" href="#form_sacos_bolsas" role="tab"
+                        aria-controls="form_sacos_bolsas" aria-selected="true">Cadastro Sacos/Bolsas</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="bigbags-tab" data-toggle="tab" href="#form_big_bags" role="tab"
+                        aria-controls="form_big_bags" aria-selected="false">Cadastro Big Bags</a>
+                </li>
+            </ul>
 
-                    <div class="form-group">
-                        <label for="produto">Produto</label>
-                        <input type="text" class="form-control" id="produto" name="produto" required>
-                    </div>
+            <div class="tab-content" id="myTabContent">
+                <!-- Formulário de Sacos/Bolsas -->
+                <div class="tab-pane fade show active" id="form_sacos_bolsas" role="tabpanel"
+                    aria-labelledby="sacos-tab">
+                    <form action="{{ url_for('add_pedido') }}" method="POST">
+                        <div class="form-group">
+                            <label for="nome_cliente">Nome do Cliente</label>
+                            <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="data_emissao">Data de Emissão</label>
-                        <input type="date" class="form-control" id="data_emissao" name="data_emissao" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="produto">Produto</label>
+                            <input type="text" class="form-control" id="produto" name="produto" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="data_entrega">Data de Entrega</label>
-                        <input type="date" class="form-control" id="data_entrega" name="data_entrega" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="data_emissao">Data de Emissão</label>
+                            <input type="date" class="form-control" id="data_emissao" name="data_emissao" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="entregador">Entregador</label>
-                        <input type="text" class="form-control" id="entregador" name="entregador">
-                    </div>
+                        <div class="form-group">
+                            <label for="data_entrega">Data de Entrega</label>
+                            <input type="date" class="form-control" id="data_entrega" name="data_entrega" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="emissor_pedido">Emissor do Pedido</label>
-                        <input type="text" class="form-control" id="emissor_pedido" name="emissor_pedido">
-                    </div>
+                        <div class="form-group">
+                            <label for="entregador">Entregador</label>
+                            <input type="text" class="form-control" id="entregador" name="entregador">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="tamanho">Tamanho</label>
-                        <input type="text" class="form-control" id="tamanho" name="tamanho">
-                    </div>
+                        <div class="form-group">
+                            <label for="emissor_pedido">Emissor do Pedido</label>
+                            <input type="text" class="form-control" id="emissor_pedido" name="emissor_pedido">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="tela">Tela</label>
-                        <input type="text" class="form-control" id="tela" name="tela">
-                    </div>
+                        <div class="form-group">
+                            <label for="tamanho">Tamanho</label>
+                            <input type="text" class="form-control" id="tamanho" name="tamanho">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="alca">Alça</label>
-                        <input type="text" class="form-control" id="alca" name="alca">
-                    </div>
-                    <div class="form-group">
-                        <label for="medida_alca">Medida da Alça (cm)</label>
-                        <input type="number" class="form-control" id="medida_alca" name="medida_alca" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="tela">Tela</label>
+                            <input type="text" class="form-control" id="tela" name="tela">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="estampa">Estampa</label>
-                        <input type="text" class="form-control" id="estampa" name="estampa">
-                    </div>
+                        <div class="form-group">
+                            <label for="alca">Alça</label>
+                            <input type="text" class="form-control" id="alca" name="alca">
+                        </div>
+                        <div class="form-group">
+                            <label for="medida_alca">Medida da Alça (cm)</label>
+                            <input type="number" class="form-control" id="medida_alca" name="medida_alca" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="quantidade">Quantidade</label>
-                        <input type="number" class="form-control" id="quantidade" name="quantidade" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="estampa">Estampa</label>
+                            <input type="text" class="form-control" id="estampa" name="estampa">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="quantidade_volumes">Quantidade de Volumes</label>
-                        <input type="number" class="form-control" id="quantidade_volumes" name="quantidade_volumes">
-                    </div>
+                        <div class="form-group">
+                            <label for="quantidade">Quantidade</label>
+                            <input type="number" class="form-control" id="quantidade" name="quantidade" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="observacao">Observação</label>
-                        <textarea class="form-control" id="observacao" name="observacao" rows="3"></textarea>
-                    </div>
+                        <div class="form-group">
+                            <label for="quantidade_volumes">Quantidade de Volumes</label>
+                            <input type="number" class="form-control" id="quantidade_volumes" name="quantidade_volumes">
+                        </div>
 
-                    <button type="submit" class="btn btn-primary">Cadastrar Pedido</button>
-                </form>
+                        <div class="form-group">
+                            <label for="observacao">Observação</label>
+                            <textarea class="form-control" id="observacao" name="observacao" rows="3"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Cadastrar Pedido</button>
+                    </form>
+                </div>
+
+                <!-- Formulário de Big Bags -->
+                <div class="tab-pane fade" id="form_big_bags" role="tabpanel" aria-labelledby="bigbags-tab">
+                    <form action="{{ url_for('add_bigbag') }}" method="POST">
+                        <div class="form-group">
+                            <label for="nome_cliente_bigbag">Nome do Cliente</label>
+                            <input type="text" class="form-control" id="nome_cliente_bigbag" name="nome_cliente"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="produto_bigbag">Produto</label>
+                            <input type="text" class="form-control" id="produto_bigbag" name="produto" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="data_emissao_bigbag">Data de Emissão</label>
+                            <input type="date" class="form-control" id="data_emissao_bigbag" name="data_emissao"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="data_entrega_bigbag">Data de Entrega</label>
+                            <input type="date" class="form-control" id="data_entrega_bigbag" name="data_entrega"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="entregador_bigbag">Entregador</label>
+                            <input type="text" class="form-control" id="entregador_bigbag" name="entregador">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="emissor_pedido_bigbag">Emissor do Pedido</label>
+                            <input type="text" class="form-control" id="emissor_pedido_bigbag" name="emissor_pedido">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ficha_tecnica">Ficha Técnica</label>
+                            <input type="text" class="form-control" id="ficha_tecnica" name="ficha_tecnica">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="estampa_bigbag">Estampa</label>
+                            <input type="text" class="form-control" id="estampa_bigbag" name="estampa">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantidade_bigbag">Quantidade</label>
+                            <input type="number" class="form-control" id="quantidade_bigbag" name="quantidade" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantidade_volumes_bigbag">Quantidade de Volumes</label>
+                            <input type="number" class="form-control" id="quantidade_volumes_bigbag"
+                                name="quantidade_volumes">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="observacao_bigbag">Observação</label>
+                            <textarea class="form-control" id="observacao_bigbag" name="observacao" rows="3"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-secondary">Cadastrar Big Bag</button>
+                    </form>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Footer -->
-    <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-            <div class="copyright text-center my-auto">
-                <span>Copyright &copy; Desenvolvido por André Terto</span>
-            </div>
-        </div>
-    </footer>
-    <!-- End of Footer -->
 
-    </div>
-    <!-- End of Content Wrapper -->
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Desenvolvido por André Terto</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
 
     </div>
     <!-- End of Page Wrapper -->
@@ -376,7 +456,19 @@
     <!-- Page level custom scripts -->
     <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js') }}"></script>
+    <script>
+        function showForm(formType) {
+            event.preventDefault(); // Previne comportamento padrão
 
+            if (formType === 'sacos') {
+                document.getElementById('form_sacos_bolsas').style.display = 'block';
+                document.getElementById('form_big_bags').style.display = 'none';
+            } else if (formType === 'bigbags') {
+                document.getElementById('form_sacos_bolsas').style.display = 'none';
+                document.getElementById('form_big_bags').style.display = 'block';
+            }
+        }
+    </script>
 </body>
 
 </html>
