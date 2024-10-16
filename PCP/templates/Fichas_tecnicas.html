@@ -70,6 +70,7 @@
                         <a class="collapse-item" href="{{ url_for ('Op_cadastro') }}">Nova Ordem de Produção</a>
                         <a class="collapse-item" href="{{ url_for ('Op_andamento') }}">OP's em andamento</a>
                         <a class="collapse-item" href="{{ url_for ('Op_finalizada') }}">OP's Finalizadas</a>
+                        <a class="collapse-item" href="{{ url_for ('Fichas_tecnicas') }}">Fichas Técnicas</a>
                     </div>
                 </div>
             </li>
@@ -87,8 +88,6 @@
                         <h6 class="collapse-header">Controle de Estoque:</h6>
                         <a class="collapse-item" href="{{ url_for ('tecido') }}">Estoque de Tecido</a>
                         <a class="collapse-item" href="{{ url_for ('alca')}}">Estoque de Alças</a>
-                        <a class="collapse-item" href="{{ url_for ('Op_finalizada') }}">OP's Finalizadas</a>
-                        <a class="collapse-item" href="{{ url_for ('Fichas_tecnicas') }}">Fichas Técnicas</a>
                     </div>
                 </div>
             </li>
@@ -229,95 +228,174 @@
             </div>
             </nav>
             <!-- End of Topbar -->
-            <div class="container-pedido">
-                <h2 class="text-center">Pedidos Finalizados</h2>
+            <title>Listar Fichas Técnicas</title>
+            </head>
 
-                <form method="GET" action="{{ url_for('Op_finalizada') }}" class="mb-4">
-                    <div class="input-group">
-                        <input type="text" name="search" class="form-control"
-                            placeholder="Pesquisar pelo nome do cliente" value="{{ search_query }}">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="submit">Pesquisar</button>
-                        </div>
+            <body>
+                <div class="container mt-5">
+                    <h1 class="text-center">Fichas Técnicas</h1>
+
+                    <!-- Botão para abrir o modal de cadastro -->
+                    <div class="text-right mb-3">
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#cadastrarFichaModal">Cadastrar
+                            Ficha
+                            Técnica</button>
                     </div>
-                </form>
 
-                {% if pedidos.items %}
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead class="thead-dark">
+                    <!-- Tabela para exibir as fichas técnicas existentes -->
+                    <table class="table table-striped">
+                        <thead>
                             <tr>
-                                <th>Cliente</th>
-                                <th>Produto</th>
-                                <th>Data de Emissão</th>
-                                <th>Data de Entrega</th>
-                                <th>Status</th>
+                                <th>Descrição</th>
+                                <th>Insumos</th>
+                                <th>Custo por Produção</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for pedido in pedidos.items %}
+                            {% for ficha in fichas_tecnicas %}
                             <tr>
-                                <td>{{ pedido.nome_cliente }}</td>
-                                <td>{{ pedido.produto }}</td>
-                                <td>{{ pedido.data_emissao.strftime('%d/%m/%Y') }}</td>
-                                <td>{{ pedido.data_entrega.strftime('%d/%m/%Y') }}</td>
-                                <td>{{ pedido.status }}</td>
+                                <td>{{ ficha.descricao }}</td>
+                                <td>{{ ficha.insumos }}</td>
+                                <td>{{ ficha.custo_producao }}</td>
+                                <td>
+                                    <button class="btn btn-warning" data-toggle="modal" data-target="#editarFichaModal{{ ficha.id }}">Editar</button>
+                                    <form action="{{ url_for('deletar_ficha', id=ficha.id) }}" method="POST" style="display:inline;">
+                                        <button class="btn btn-danger">Deletar</button>
+                                    </form>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Paginação -->
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        {% if pedidos.has_prev %}
-                        <li class="page-item">
-                            <a class="page-link"
-                                href="{{ url_for('Op_finalizada', page=pedidos.prev_num, search=search_query) }}"
-                                aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        {% endif %}
+                <!-- Modal para cadastrar ficha técnica -->
+                <div class="modal fade" id="cadastrarFichaModal" tabindex="-1" role="dialog"
+                    aria-labelledby="cadastrarFichaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="cadastrarFichaModalLabel">Cadastrar Ficha Técnica</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form action="{{ url_for('cadastrar_ficha') }}" method="POST">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="descricao">Descrição</label>
+                                        <input type="text" class="form-control" name="descricao" required>
+                                    </div>
 
-                        {% for page_num in range(1, pedidos.pages + 1) %}
-                        <li class="page-item {% if pedidos.page == page_num %}active{% endif %}">
-                            <a class="page-link"
-                                href="{{ url_for('Op_finalizada', page=page_num, search=search_query) }}">{{ page_num
-                                }}</a>
-                        </li>
-                        {% endfor %}
+                                    <!-- Barra de pesquisa para selecionar Insumos -->
+                                    <div class="form-group">
+                                        <label for="insumos">Pesquisar Insumos</label>
+                                        <input type="text" class="form-control" id="pesquisarInsumos"
+                                            placeholder="Digite o nome do insumo">
+                                        <div id="resultadosInsumos"></div> <!-- Resultados da pesquisa -->
+                                    </div>
 
-                        {% if pedidos.has_next %}
-                        <li class="page-item">
-                            <a class="page-link"
-                                href="{{ url_for('Op_finalizada', page=pedidos.next_num, search=search_query) }}"
-                                aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </nav>
+                                    <div id="insumosSelecionados">
+                                        <!-- Insumos selecionados aparecerão aqui -->
+                                    </div>
 
-                {% else %}
-                <div class="alert alert-info text-center" role="alert">
-                    Não há pedidos finalizados.
-                </div>
-                {% endif %}
-            </div>
-
-
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Desenvolvido por André Terto</span>
+                                    <div class="form-group">
+                                        <label for="custo_producao">Custo por Produção</label>
+                                        <input type="number" class="form-control" name="custo_producao" step="0.01"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                    <button type="submit" class="btn btn-primary">Salvar</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </footer>
-            <!-- End of Footer -->
+
+                {% for ficha in fichas_tecnicas %}
+                <!-- Modal para editar ficha técnica -->
+                <div class="modal fade" id="editarFichaModal{{ ficha.id }}" tabindex="-1" role="dialog"
+                    aria-labelledby="editarFichaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editarFichaModalLabel">Editar Ficha Técnica</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form action="{{ url_for('editar_ficha', id=ficha.id) }}" method="POST">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="descricao">Descrição</label>
+                                        <input type="text" class="form-control" name="descricao"
+                                            value="{{ ficha.descricao }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="custo_producao">Custo por Produção</label>
+                                        <input type="number" class="form-control" name="custo_producao" step="0.01"
+                                            value="{{ ficha.custo_producao }}" required>
+                                    </div>
+
+                                    <!-- Insumos para edição -->
+                                    <div class="form-group">
+                                        <label for="insumos">Selecionar Insumos</label>
+                                        <div class="tecidos-section">
+                                            <h6>Tecidos</h6>
+                                            {% for tecido in tecidos %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="tecidos"
+                                                    value="{{ tecido.id }}" {% if tecido.nome_tela in ficha.insumos %}
+                                                    checked {% endif %}>
+                                                <label class="form-check-label">{{ tecido.nome_tela }} ({{
+                                                    tecido.unidade_medida }})</label>
+                                                <input type="number" class="form-control"
+                                                    name="quantidade_tecido_{{ tecido.id }}"
+                                                    placeholder="Quantidade utilizada" min="0"
+                                                    value="{{ get_quantidade_tecido(tecido.nome_tela) }}">
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+
+                                        <div class="alcas-section">
+                                            <h6>Alças</h6>
+                                            {% for alca in alcas %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="alcas"
+                                                    value="{{ alca.id }}" {% if alca.nome_alca in ficha.insumos %}
+                                                    checked {% endif %}>
+                                                <label class="form-check-label">{{ alca.nome_alca }} ({{
+                                                    alca.unidade_medida }})</label>
+                                                <input type="number" class="form-control"
+                                                    name="quantidade_alca_{{ alca.id }}"
+                                                    placeholder="Quantidade utilizada" min="0"
+                                                    value="{{ get_quantidade_alca(alca.nome_alca) }}">
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                    <button type="submit" class="btn btn-primary">Salvar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Desenvolvido por André Terto</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
         </div>
     </div>
     </div>
@@ -365,6 +443,63 @@
     <!-- Page level custom scripts -->
     <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js') }}"></script>
+    <script>
+        // Função para buscar insumos via AJAX
+        document.getElementById('pesquisarInsumos').addEventListener('input', function () {
+            let termo = this.value;
+            if (termo.length >= 2) {
+                fetch('/buscar_insumos?q=' + termo)
+                    .then(response => response.json())
+                    .then(data => {
+                        let resultadosDiv = document.getElementById('resultadosInsumos');
+                        resultadosDiv.innerHTML = ''; // Limpa resultados anteriores
+
+                        // Adiciona os resultados da pesquisa
+                        data.forEach(insumo => {
+                            let insumoDiv = document.createElement('div');
+                            insumoDiv.classList.add('insumo-result');
+                            insumoDiv.textContent = `${insumo.nome} (${insumo.tipo})`;
+                            insumoDiv.dataset.insumoId = insumo.id;
+
+                            // Ao clicar, adiciona o insumo na lista de selecionados
+                            insumoDiv.addEventListener('click', function () {
+                                adicionarInsumoSelecionado(insumo.id, insumo.nome, insumo.tipo);
+                            });
+
+                            resultadosDiv.appendChild(insumoDiv);
+                        });
+                    });
+            }
+        });
+
+        // Função para adicionar o insumo selecionado na lista
+        function adicionarInsumoSelecionado(id, nome, tipo) {
+            let insumosDiv = document.getElementById('insumosSelecionados');
+
+            // Verifica se o insumo já foi adicionado
+            if (!document.querySelector(`#insumo-${id}`)) {
+                let insumoSelecionadoDiv = document.createElement('div');
+                insumoSelecionadoDiv.id = `insumo-${id}`;
+                insumoSelecionadoDiv.innerHTML = `
+                    <div class="form-group">
+                        <label>${nome} (${tipo})</label>
+                        <input type="hidden" name="insumo_ids[]" value="${id}">
+                        <input type="number" class="form-control" name="quantidade_insumo_${id}" placeholder="Quantidade utilizada" min="0" required>
+                        <button type="button" class="btn btn-danger btn-sm mt-1" onclick="removerInsumo(${id})">Remover</button>
+                    </div>
+                `;
+                insumosDiv.appendChild(insumoSelecionadoDiv);
+            }
+        }
+
+        // Função para remover o insumo selecionado
+        function removerInsumo(id) {
+            let insumoDiv = document.getElementById(`insumo-${id}`);
+            if (insumoDiv) {
+                insumoDiv.remove();
+            }
+        }
+    </script>
 
 </body>
 
