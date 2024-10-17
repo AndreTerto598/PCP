@@ -258,7 +258,7 @@
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        
                                         <th>Nome da Alça</th>
                                         <th>Quantidade</th>
                                         <th>Unidade de Medida</th>
@@ -268,7 +268,7 @@
                                 <tbody>
                                     {% for item in itens %}
                                     <tr>
-                                        <td>{{ item.id }}</td>
+                                        
                                         <td>{{ item.nome_alca }}</td>
                                         <td>{{ item.quantidade_alca_formatada }}</td>
                                         <td>{{ item.unidade_medida }}</td>
@@ -307,8 +307,8 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="editItemQuantity">Quantidade</label>
-                                                            <input type="number" class="form-control"
-                                                                name="quantidade_alca"
+                                                            <input type="text" class="form-control"
+                                                                name="quantidade_alca" pattern="^\d+([.,]\d{1,2})?$"
                                                                 value="{{ item.quantidade_alca }}" required>
                                                         </div>
                                                         <div class="form-group">
@@ -349,8 +349,9 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="modal_quantidade_alca">Quantidade</label>
-                                                <input type="number" class="form-control" id="modal_quantidade_alca"
-                                                    name="quantidade_alca" required>
+                                                <input type="text" class="form-control" id="modal_quantidade_alca"
+                                                    name="quantidade_alca" pattern="^\d+([.,]\d{1,2})?$"
+                                                    title="Use ponto ou vírgula para separar casas decimais" required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="modal_unidade_medida">Unidade de medida</label>

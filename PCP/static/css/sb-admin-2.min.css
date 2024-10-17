@@ -229,6 +229,49 @@ svg {
 table {
     border-collapse: collapse
 }
+#alca-results{
+    z-index: 1000;
+    background: rgb(255, 255, 255);
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+}
+.result-item {
+    padding: 5px;
+    cursor: pointer;
+}
+.result-item:hover {
+    background-color: #f1f1f1;
+}
+#ficha-results{
+    z-index: 1000;
+    background: rgb(255, 255, 255);
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+}
+.result-item {
+    padding: 5px;
+    cursor: pointer;
+}
+.result-item:hover {
+    background-color: #f1f1f1;
+}
+
+#tela-results  {
+    z-index: 1000;
+    background: rgb(255, 255, 255);
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+}
+.result-item {
+    padding: 5px;
+    cursor: pointer;
+}
+.result-item:hover {
+    background-color: #f1f1f1;
+}
 
 caption {
     padding-top: .75rem;

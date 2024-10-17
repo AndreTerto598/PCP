@@ -27,7 +27,7 @@ def __repr__(self):
 class Estoque_tecido(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome_tela = db.Column(db.String(100), nullable=False)
-    quantidade_tela = db.Column(db.Integer, nullable=False)
+    quantidade_tela = db.Column(db.Float, nullable=False)
     tipo_tela = db.Column(db.String(100), nullable=False)
     unidade_medida = db.Column(db.String(50), nullable=False)
 
@@ -59,7 +59,7 @@ app.jinja_env.globals['get_quantidade_alca'] = get_quantidade_alca
 class Estoque_alca(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome_alca = db.Column(db.String(255), nullable=False)
-    quantidade_alca = db.Column(db.Integer, nullable=False)
+    quantidade_alca = db.Column(db.Float, nullable=False)
     unidade_medida = db.Column(db.String(50), nullable=False)
 
     def __init__(self, nome_alca, quantidade_alca, unidade_medida):
@@ -76,15 +76,18 @@ class PedidoCliente(db.Model):
     data_entrega = db.Column(db.DateTime, nullable=False)
     entregador = db.Column(db.String(100), nullable=False)
     emissor_pedido = db.Column(db.String(100), nullable=False)
-    tamanho = db.Column(db.String(50), nullable=False)
-    tela = db.Column(db.String(100), nullable=False)
-    alca = db.Column(db.String(100), nullable=False)
-    medida_alca = db.Column(db.Float, nullable=False)
+    tamanho_altura = db.Column(db.String(50), nullable=True)
+    tamanho_largura = db.Column(db.String(50), nullable=True)
+    tela = db.Column(db.String(100), nullable=True)
+    alca = db.Column(db.String(100), nullable=True)
+    medida_alca = db.Column(db.Float, nullable=True)
     estampa = db.Column(db.String(255), nullable=False)
     quantidade = db.Column(db.Integer, nullable=False)
     quantidade_volumes = db.Column(db.Integer, nullable=False)
     observacao = db.Column(db.Text, nullable=True)
     status = db.Column(db.String(50), nullable=False, default='andamento')
+    ficha_id = db.Column(db.Integer, db.ForeignKey('ficha_tecnica.id'))  # Aqui você pode usar o ID da ficha
+    ficha = db.relationship('FichaTecnica', backref='pedidos')
 
     def __repr__(self):
         return f'<PedidoCliente {self.nome_cliente}>'
@@ -170,9 +173,9 @@ def logout():
 def formatar_quantidade(quantidade):
     try:
         quantidade = float(quantidade)  # Convertendo para float se necessário
-        return f"{quantidade:,.0f}".replace(',', '.')  # Exibe a quantidade com separador de milhar
+        return f"{quantidade:,.2f}".replace('.', '#').replace(',', '.').replace('#', ',')
     except (ValueError, TypeError):
-        return "0"
+        return "0,00"  # Valor padrão em caso de erro
 
 @app.route('/tecido')
 def tecido():
@@ -197,10 +200,16 @@ def tecido():
 @app.route('/add_item', methods=['POST'])
 def add_item():
     nome_tela = request.form['nome_tela']
-    quantidade_tela = request.form['quantidade_tela']
+    quantidade_tela = request.form['quantidade_tela'].replace(',', '.')  # Substituir vírgula por ponto
     tipo_tela = request.form['tipo_tela']
     unidade_medida = request.form['unidade_medida']
-
+    
+    # Converter quantidade para float
+    try:
+        quantidade_tela = float(quantidade_tela)
+    except ValueError:
+        flash('Por favor, insira uma quantidade válida.')
+        return redirect(url_for('tecido'))
     
     novo_item = Estoque_tecido(nome_tela=nome_tela, quantidade_tela=quantidade_tela, tipo_tela=tipo_tela, unidade_medida=unidade_medida)
     db.session.add(novo_item)
@@ -216,11 +225,17 @@ def edit_item(id):
     item = Estoque_tecido.query.get_or_404(id)
     
     item.nome_tela = request.form['nome_tela']
-    item.quantidade_tela = int(request.form['quantidade_tela'])
+    quantidade_tela = request.form['quantidade_tela'].replace(',', '.')  # Substituir vírgula por ponto
     item.tipo_tela = request.form['tipo_tela']
     item.unidade_medida = request.form['unidade_medida']
-    
 
+    # Converter quantidade para float
+    try:
+        item.quantidade_tela = float(quantidade_tela)
+    except ValueError:
+        flash('Por favor, insira uma quantidade válida.')
+        return redirect(url_for('tecido'))
+    
     db.session.commit()
     
     flash('Item atualizado com sucesso!')
@@ -248,6 +263,19 @@ def formatar_quantidade_alca(quantidade):
     except (ValueError, TypeError):
         return "0"
     
+#Rota para formatar a quantidade de alças
+
+@app.template_filter('formatar_quantidade_alca')
+def formatar_quantidade_alca(quantidade):
+    try:
+        quantidade = float(quantidade)  # Convertendo para float se necessário
+        # Exibe a quantidade com separador de milhar (.) e duas casas decimais (,)
+        return f"{quantidade:,.2f}".replace('.', '#').replace(',', '.').replace('#', ',')
+    except (ValueError, TypeError):
+        return "0,00"  # Valor padrão em caso de erro
+
+
+#Rota de alças
 
 @app.route('/alca')
 def alca():
@@ -288,7 +316,7 @@ def edit_alca(id):
     item = Estoque_alca.query.get_or_404(id)
     
     item.nome_alca = request.form['nome_alca']
-    item.quantidade_alca = int(request.form['quantidade_alca'])  # Garantindo que o valor seja um inteiro
+    item.quantidade_alca = request.form['quantidade_alca']  
     item.unidade_medida = request.form['unidade_medida']
     
     db.session.commit()
@@ -307,20 +335,68 @@ def delete_alca(id):
     flash('Alça removida com sucesso!')
     return redirect(url_for('alca'))
 
+#Rota para pesquisar telas
+@app.route('/search_telas', methods=['GET'])
+def search_telas():
+    query = request.args.get('q', '')  # Termo de busca fornecido pelo usuário
+    telas = Estoque_tecido.query.filter(Estoque_tecido.nome_tela.ilike(f'%{query}%')).all()  # Busca telas que contenham o termo
+    telas_list = [{'nome_tela': tela.nome_tela} for tela in telas]
+    return jsonify(telas_list)  # Retorna os dados em formato JSON
+
+#Rota para pesquisar Alças
+@app.route('/search_alcas', methods=['GET'])
+def search_alcas():
+    query = request.args.get('q', '')  # Termo de busca fornecido pelo usuário
+    alcas = Estoque_alca.query.filter(Estoque_alca.nome_alca.ilike(f'%{query}%')).all()  # Busca telas que contenham o termo
+    alcas_list = [{'nome_alca': alca.nome_alca} for alca in alcas]
+    return jsonify(alcas_list)  # Retorna os dados em formato JSON
+
+#Rota para pesquisar Fichas
+@app.route('/search_fichas', methods=['GET'])
+def search_fichas():
+    query = request.args.get('q', '')  # Termo de busca fornecido pelo usuário
+    fichas = FichaTecnica.query.filter(FichaTecnica.descricao.ilike(f'%{query}%')).all()  # Busca telas que contenham o termo
+    fichas_list = [{'descricao': fichas.descricao} for fichas in fichas]
+    return jsonify(fichas_list)  # Retorna os dados em formato JSON
 
 # Rota para processar o cadastro de Sacos e Bolsas
 @app.route('/add_pedido', methods=['POST'])
 def add_pedido():
+     # Capturando os dados do formulário
+    nome_tela = request.form.get('tela')
+    print(f'Tela: {nome_tela}')
+
+    nome_alca = request.form.get('alca')
+    print(f'Alca: {nome_alca}')
+
+        # Verificar se a Tela existe
+    tela = Estoque_tecido.query.filter_by(nome_tela=nome_tela).first()
+    if not tela:
+        flash('Tela não encontrada.')
+        return redirect(url_for('Op_cadastro'))
+    
+    # Verificar se a Alça existe
+    alca = Estoque_alca.query.filter_by(nome_alca=nome_alca).first()
+    if not alca:
+        flash('Alça não encontrada.')
+        return redirect(url_for('Op_cadastro'))
+    
+
     nome_cliente = request.form['nome_cliente']
     produto = request.form['produto']
     data_emissao = datetime.strptime(request.form['data_emissao'], '%Y-%m-%d')
     data_entrega = datetime.strptime(request.form['data_entrega'], '%Y-%m-%d')
     entregador = request.form['entregador']
     emissor_pedido = request.form['emissor_pedido']
-    tamanho = request.form['tamanho']
-    tela = request.form['tela']
-    alca = request.form['alca']
-    medida_alca = request.form['medida_alca']
+    tamanho_altura = request.form['tamanho_altura']  # Corrigido para refletir os campos de tamanho
+    tamanho_largura = request.form['tamanho_largura']  # Corrigido para refletir os campos de tamanho
+    tela = request.form.get('tela')  # Obter o valor da tela do formulário
+    alca = request.form.get('alca')
+
+    # Convertendo a medida da alça de vírgula para ponto, se necessário
+    medida_alca = request.form['medida_alca'].replace(',', '.')  # Substitui a vírgula por ponto
+    medida_alca = float(medida_alca) if medida_alca else None  # Converte para float
+
     estampa = request.form['estampa']
     quantidade = request.form['quantidade']
     quantidade_volumes = request.form['quantidade_volumes']
@@ -333,8 +409,9 @@ def add_pedido():
         data_entrega=data_entrega,
         entregador=entregador,
         emissor_pedido=emissor_pedido,
-        tamanho=tamanho,
-        tela=tela,
+        tamanho_altura=tamanho_altura,
+        tamanho_largura=tamanho_largura,
+        tela=tela,  # Usar o valor da tela do formulário
         alca=alca,
         medida_alca=medida_alca,
         estampa=estampa,
@@ -348,23 +425,32 @@ def add_pedido():
     flash('Pedido cadastrado com sucesso!')
     return redirect(url_for('Op_andamento'))
 
-#Rota para Cadastro de Big Bags
+# Rota para Cadastro de Big Bags
 @app.route('/add_bigbag', methods=['POST'])
 def add_bigbag():
-    # Obtendo os dados do formulário de Big Bags
-    nome_cliente = request.form['nome_cliente']
-    produto = request.form['produto']
-    data_emissao = request.form['data_emissao']
-    data_entrega = request.form['data_entrega']
-    entregador = request.form['entregador']
-    emissor_pedido = request.form['emissor_pedido']
-    ficha_tecnica = request.form['ficha_tecnica']
-    estampa = request.form['estampa']
-    quantidade = request.form['quantidade']
-    quantidade_volumes = request.form['quantidade_volumes']
-    observacao = request.form['observacao']
+    descricao_ficha = request.form.get('ficha')  # Obtém a descrição da ficha
+    print(f'Ficha: {descricao_ficha}')
 
-    # Criar uma nova instância de PedidoCliente
+    # Verificar se a Ficha existe
+    ficha = FichaTecnica.query.filter_by(descricao=descricao_ficha).first()  # Busca a ficha pela descrição
+    if not ficha:
+        flash('Ficha não encontrada.')
+        return redirect(url_for('Op_cadastro'))
+    
+    # Obtendo os dados do formulário de Big Bags
+    nome_cliente = request.form.get('nome_cliente')
+    produto = request.form.get('produto')
+    data_emissao = request.form.get('data_emissao')
+    data_entrega = request.form.get('data_entrega')
+    entregador = request.form.get('entregador')
+    emissor_pedido = request.form.get('emissor_pedido')
+    estampa = request.form.get('estampa')
+    quantidade = request.form.get('quantidade')
+    quantidade_volumes = request.form.get('quantidade_volumes')
+    observacao = request.form.get('observacao')
+    status = request.form.get('status')
+
+    # Criar o objeto do pedido
     novo_pedido_bigbag = PedidoCliente(
         nome_cliente=nome_cliente,
         produto=produto,
@@ -372,12 +458,12 @@ def add_bigbag():
         data_entrega=data_entrega,
         entregador=entregador,
         emissor_pedido=emissor_pedido,
-        ficha_tecnica=ficha_tecnica,
         estampa=estampa,
         quantidade=quantidade,
         quantidade_volumes=quantidade_volumes,
         observacao=observacao,
-        status='em andamento'  # Definir status inicial como 'em andamento'
+        status=status,
+        ficha_id=ficha.id  # Aqui você pode usar o ID da ficha
     )
 
     # Adicionar o pedido ao banco de dados
@@ -386,13 +472,15 @@ def add_bigbag():
 
     # Exibir mensagem de sucesso
     flash('Pedido de Big Bags cadastrado com sucesso!')
-    return redirect(url_for('Op_pedidos'))
+    return redirect(url_for('Op_andamento'))
 
 # Rota para exibir o formulário de cadastro de pedidos
 @app.route('/Op_cadastro', methods=['GET', 'POST'])
 def Op_cadastro():
-    return render_template('Op_cadastro.html')
-
+    fichas_tecnicas = FichaTecnica.query.all()
+    telas = Estoque_tecido.query.all()
+    print(f'Telas encontradas: {[tela.nome_tela for tela in telas]}') 
+    return render_template('Op_cadastro.html', fichas_tecnicas=fichas_tecnicas, telas=telas)
 
 #Rota para exibir os pedidos em andamento
 @app.route('/Op_andamento')
@@ -443,6 +531,7 @@ def buscar_insumos():
         insumos.append({'id': alca.id, 'nome': alca.nome_alca, 'tipo': 'Alça'})
     
     return jsonify(insumos)
+    
 
 # Rota para cadastrar ficha técnica
 @app.route('/cadastrar_ficha', methods=['POST'])
@@ -483,6 +572,7 @@ def cadastrar_ficha():
     db.session.add(nova_ficha)
     db.session.commit()
 
+    # Redirecionar para a página que lista as fichas técnicas
     return redirect(url_for('Fichas_tecnicas'))
 
 # Rota para editar ficha técnica (opcional)

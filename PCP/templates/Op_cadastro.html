@@ -290,22 +290,34 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="tamanho">Tamanho</label>
-                            <input type="text" class="form-control" id="tamanho" name="tamanho">
+                            <label for="tamanho_altura">Tamanho - Altura em CM</label>
+                            <input type="text" class="form-control" id="tamanho_altura" name="tamanho_altura">
+                        </div>
+                        <div class="form-group">
+                            <label for="tamanho_largura">Tamanho - Largura em CM</label>
+                            <input type="text" class="form-control" id="tamanho_largura" name="tamanho_largura">
                         </div>
 
                         <div class="form-group">
-                            <label for="tela">Tela</label>
-                            <input type="text" class="form-control" id="tela" name="tela">
+                            <label for="tela">Tela:</label>
+                            <input type="text" class="form-control" id="tela" name="tela"
+                                placeholder="Digite o nome da tela" required>
+                            <div id="tela-results">
+                                <!-- Os resultados da pesquisa aparecerão aqui -->
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="alca">Alça</label>
-                            <input type="text" class="form-control" id="alca" name="alca">
+                            <label for="alca">Alça:</label>
+                            <input type="text" class="form-control" id="alca" name="alca"
+                                placeholder="Digite o nome da alça" required>
+                            <div id="alca-results">
+                            </div>
                         </div>
+
                         <div class="form-group">
                             <label for="medida_alca">Medida da Alça (cm)</label>
-                            <input type="number" class="form-control" id="medida_alca" name="medida_alca" required>
+                            <input type="text" class="form-control" id="medida_alca" name="medida_alca" required>
                         </div>
 
                         <div class="form-group">
@@ -345,7 +357,6 @@
                             <label for="produto_bigbag">Produto</label>
                             <input type="text" class="form-control" id="produto_bigbag" name="produto" required>
                         </div>
-
                         <div class="form-group">
                             <label for="data_emissao_bigbag">Data de Emissão</label>
                             <input type="date" class="form-control" id="data_emissao_bigbag" name="data_emissao"
@@ -369,8 +380,12 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="ficha_tecnica">Ficha Técnica</label>
-                            <input type="text" class="form-control" id="ficha_tecnica" name="ficha_tecnica">
+                            <label for="ficha">Ficha:</label>
+                            <input type="text" class="form-control" id="ficha" name="ficha"
+                                placeholder="Digite o nome da ficha" required>
+                            <div id="ficha-results">
+                                <!-- Os resultados da pesquisa aparecerão aqui -->
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -397,79 +412,206 @@
                         <button type="submit" class="btn btn-secondary">Cadastrar Big Bag</button>
                     </form>
                 </div>
+
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Desenvolvido por André Terto</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+
             </div>
+            <!-- End of Content Wrapper -->
 
+        </div>
+        <!-- End of Page Wrapper -->
 
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Desenvolvido por André Terto</span>
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Deseja realmente sair?</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Aperte em "Sair" para encerrar a sessão.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                        <a class="btn btn-primary" href="{{ url_for ('logout') }}">Sair</a>
                     </div>
                 </div>
-            </footer>
-            <!-- End of Footer -->
-
-        </div>
-        <!-- End of Content Wrapper -->
-
-    </div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Deseja realmente sair?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Aperte em "Sair" para encerrar a sessão.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                    <a class="btn btn-primary" href="{{ url_for ('logout') }}">Sair</a>
-                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <!-- Bootstrap core JavaScript-->
+        <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+        <!-- Core plugin JavaScript-->
+        <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="{{ url_for('static', filename='js/sb-admin-2.min.js') }}"></script>
+        <!-- Custom scripts for all pages-->
+        <script src="{{ url_for('static', filename='js/sb-admin-2.min.js') }}"></script>
 
-    <!-- Page level plugins -->
-    <script src="{{ url_for('static', filename='vendor/chart.js/Chart.min.js') }}"></script>
+        <!-- Page level plugins -->
+        <script src="{{ url_for('static', filename='vendor/chart.js/Chart.min.js') }}"></script>
 
-    <!-- Page level custom scripts -->
-    <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js') }}"></script>
-    <script>
-        function showForm(formType) {
-            event.preventDefault(); // Previne comportamento padrão
+        <!-- Page level custom scripts -->
+        <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js') }}"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            function showForm(formType) {
+                event.preventDefault(); // Previne comportamento padrão
 
-            if (formType === 'sacos') {
-                document.getElementById('form_sacos_bolsas').style.display = 'block';
-                document.getElementById('form_big_bags').style.display = 'none';
-            } else if (formType === 'bigbags') {
-                document.getElementById('form_sacos_bolsas').style.display = 'none';
-                document.getElementById('form_big_bags').style.display = 'block';
+                if (formType === 'sacos') {
+                    document.getElementById('form_sacos_bolsas').style.display = 'block';
+                    document.getElementById('form_big_bags').style.display = 'none';
+                } else if (formType === 'bigbags') {
+                    document.getElementById('form_sacos_bolsas').style.display = 'none';
+                    document.getElementById('form_big_bags').style.display = 'block';
+                }
             }
-        }
-    </script>
+        </script>
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+        <!-- jQuery (caso ainda não tenha incluído) -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- JavaScript do Select2 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#ficha_tecnica').select2({
+                    placeholder: "Pesquise uma ficha técnica",
+                    allowClear: true
+                });
+            });
+        </script>
+        <script>
+            $(document).ready(function () {
+                // Função para busca de telas
+                $('#tela').on('input', function () {
+                    var query = $(this).val();
+
+                    if (query.length > 0) {
+                        $.ajax({
+                            url: "{{ url_for('search_telas') }}",
+                            method: "GET",
+                            data: { q: query },
+                            success: function (data) {
+                                var results = $('#tela-results');
+                                results.empty();
+
+                                if (data.length > 0) {
+                                    results.show();
+                                    data.forEach(function (tela) {
+                                        results.append('<div class="result-item tela-item" style="padding: 5px; cursor: pointer;">' + tela.nome_tela + '</div>');
+                                    });
+                                } else {
+                                    results.hide();
+                                }
+                            }
+                        });
+                    } else {
+                        $('#tela-results').hide();
+                    }
+                });
+
+                $(document).on('click', '.tela-item', function () {
+                    $('#tela').val($(this).text());
+                    $('#tela-results').hide();
+                });
+                // Função para busca de Fichas
+                $('#ficha').on('input', function () {
+                    var query = $(this).val();
+
+                    if (query.length > 0) {
+                        $.ajax({
+                            url: "{{ url_for('search_fichas') }}",
+                            method: "GET",
+                            data: { q: query },
+                            success: function (data) {
+                                var results = $('#ficha-results');
+                                results.empty();
+
+                                if (data.length > 0) {
+                                    results.show();
+                                    data.forEach(function (ficha) {
+                                        results.append('<div class="result-item ficha-item" style="padding: 5px; cursor: pointer;">' + ficha.descricao + '</div>');
+                                    });
+                                } else {
+                                    results.hide();
+                                }
+                            }
+                        });
+                    } else {
+                        $('#ficha-results').hide();
+                    }
+                });
+
+                $(document).on('click', '.ficha-item', function () {
+                    $('#ficha').val($(this).text());
+                    $('#ficha-results').hide();
+                });
+                // Função para busca de alças
+                $('#alca').on('input', function () {
+                    var query = $(this).val();
+
+                    if (query.length > 0) {
+                        $.ajax({
+                            url: "{{ url_for('search_alcas') }}",
+                            method: "GET",
+                            data: { q: query },
+                            success: function (data) {
+                                var results = $('#alca-results');
+                                results.empty();
+
+                                if (data.length > 0) {
+                                    results.show();
+                                    data.forEach(function (alca) {
+                                        results.append('<div class="result-item alca-item" style="padding: 5px; cursor: pointer;">' + alca.nome_alca + '</div>');
+                                    });
+                                } else {
+                                    results.hide();
+                                }
+                            }
+                        });
+                    } else {
+                        $('#alca-results').hide();
+                    }
+                });
+
+                $(document).on('click', '.alca-item', function () {
+                    $('#alca').val($(this).text());
+                    $('#alca-results').hide();
+                });
+
+                $(document).on('click', function (event) {
+                    if (!$(event.target).closest('#alca').length) {
+                        $('#alca-results').hide();
+                    }
+                    if (!$(event.target).closest('#tela').length) {
+                        $('#tela-results').hide();
+                    }
+                });
+            });
+        </script>
+
 </body>
 
 </html>

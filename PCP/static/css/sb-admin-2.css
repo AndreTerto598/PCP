@@ -218,6 +218,22 @@ table {
   border-collapse: collapse;
 }
 
+#tela-results {
+  position: absolute;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.result-item {
+  padding: 5px;
+  cursor: pointer;
+}
+.result-item:hover {
+  background-color: #f1f1f1;
+}
+
 caption {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;

@@ -243,6 +243,7 @@
                                         <th>Quantidade</th>
                                         <th>Data de Emissão</th>
                                         <th>Data de Entrega</th>
+                                        <th>Observação</th>
                                         <th>Status</th>
                                         <th>Ações</th>
                                     </tr>
@@ -255,6 +256,7 @@
                                         <td>{{ pedido.quantidade}}</td>
                                         <td>{{ pedido.data_emissao.strftime('%d/%m/%Y') }}</td>
                                         <td>{{ pedido.data_entrega.strftime('%d/%m/%Y') }}</td>
+                                        <td>{{pedido.observacao}}</td>
                                         <td>{{ pedido.status }}</td>
                                         <td>
                                             <form action="{{ url_for('finalizar_pedido', id=pedido.id) }}" method="POST"

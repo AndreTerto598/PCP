@@ -308,8 +308,9 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="editItemQuantity">Quantidade</label>
-                                                            <input type="number" class="form-control" name="quantidade_tela" value="{{ item.quantidade_tela }}" required>
-                                                                
+                                                            <input type="text" class="form-control"
+                                                                name="quantidade_tela" pattern="^\d+([.,]\d{1,2})?$"
+                                                                value="{{ item.quantidade_tela }}" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="editItemPrice">Tipo de Tela</label>
@@ -354,8 +355,9 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="modal_quantidade_tela">Quantidade</label>
-                                                <input type="number" class="form-control" id="modal_quantidade_tela"
-                                                    name="quantidade_tela" required>
+                                                <input type="text" class="form-control" id="modal_quantidade_tela"
+                                                    name="quantidade_tela" pattern="^\d+([.,]\d{1,2})?$"
+                                                    title="Use ponto ou vírgula para separar casas decimais" required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="modal_tipo_tela">Tipo de Tela</label>
@@ -421,46 +423,46 @@
     </div>
 
     <!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Popper.js -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
-<!-- Bootstrap JavaScript -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<!-- Bootstrap core JavaScript-->
-<script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-<!-- Core plugin JavaScript-->
-<script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
-<!-- Custom scripts for all pages-->
-<script src="{{ url_for('static', filename='js/sb-admin-2.min.js') }}"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="{{ url_for('static', filename='js/sb-admin-2.min.js') }}"></script>
 
-<!-- Page level plugins -->
-<script src="{{ url_for('static', filename='vendor/chart.js/Chart.min.js') }}"></script>
+    <!-- Page level plugins -->
+    <script src="{{ url_for('static', filename='vendor/chart.js/Chart.min.js') }}"></script>
 
-<!-- Page level custom scripts -->
-<script src="{{ url_for('static', filename='js/demo/chart-area-demo.js') }}"></script>
-<script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js') }}"></script>
+    <!-- Page level custom scripts -->
+    <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js') }}"></script>
 
-<script>
-    function addItem() {
-        // Lógica para adicionar item
-        $('#addItemModal').modal('hide');
-        alert('Item adicionado com sucesso!');
-    }
+    <script>
+        function addItem() {
+            // Lógica para adicionar item
+            $('#addItemModal').modal('hide');
+            alert('Item adicionado com sucesso!');
+        }
 
-    function editItem() {
-        // Lógica para editar item
-        $('#editItemModal').modal('hide');
-        alert('Item editado com sucesso!');
-    }
+        function editItem() {
+            // Lógica para editar item
+            $('#editItemModal').modal('hide');
+            alert('Item editado com sucesso!');
+        }
 
-    function removeItem(id) {
-        // Lógica para remover item
-        alert('Item ' + id + ' removido com sucesso!');
-    }
-</script>
+        function removeItem(id) {
+            // Lógica para remover item
+            alert('Item ' + id + ' removido com sucesso!');
+        }
+    </script>
 
 </body>
 
