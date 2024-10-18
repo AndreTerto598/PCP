@@ -516,6 +516,50 @@ def finalizar_pedido(id):
     print(f"Pedido encontrado: {pedido}")
     print(f"Ficha ID do Pedido: {pedido.ficha_id}")  # Verificar o ficha_id do pedido
 
+
+     # Verificar o tipo de produto
+    tipo_produto = pedido.tipo_produto  # supondo que você tenha esse campo no modelo
+    altura = pedido.tamanho_altura  # em metros
+    largura = pedido.tamanho_largura  # em metros
+    tipo_tela = pedido.tipo_tela  # PLANA ou TUBULAR
+    quantidade = pedido.quantidade  # quantidade do pedido
+    gramatura_tela = pedido.gramatura_tela  # gramatura em KG
+
+    if tipo_produto == 'Saco':
+        corte = altura + 0.03  # adiciona 3 cm para sacos
+    elif tipo_produto == 'Sacola':
+        corte = altura + 0.05  # adiciona 5 cm para sacolas
+    else:
+        flash('Tipo de produto inválido.')
+        return redirect(url_for('Op_andamento'))
+
+    if tipo_tela == 'PLANA':
+        largura_tela = largura  # largura em metros
+    elif tipo_tela == 'TUBULAR':
+        largura_tela = largura * 2  # dobra a largura para tubular
+    else:
+        flash('Tipo de tela inválido.')
+        return redirect(url_for('Op_andamento'))
+    
+     # Cálculo da quantidade total de material necessário
+    quantidade_total = largura_tela * corte * quantidade * gramatura_tela
+    print(f"Quantidade total de material necessário: {quantidade_total}")
+
+    # Descontar do estoque
+    # Aqui você precisa de lógica para verificar e descontar do estoque correspondente
+    tecido = Estoque_tecido.query.filter_by(nome_tela=pedido.tela).first()
+    if tecido:
+        print(f"Estoque atual de tecido {pedido.tela}: {tecido.quantidade_tela}")
+        if tecido.quantidade_tela >= quantidade_total:
+            tecido.quantidade_tela -= quantidade_total
+            print(f"Novo estoque de tecido {pedido.tela}: {tecido.quantidade_tela}")
+        else:
+            flash(f'Estoque insuficiente de {pedido.tela}.')
+            return redirect(url_for('Op_andamento'))
+    else:
+        flash(f'Tecido {pedido.tela} não encontrado.')
+        return redirect(url_for('Op_andamento'))
+
     # Verificar se o pedido tem uma ficha técnica associada
     if pedido.ficha_id:
         # Buscar a ficha técnica associada ao pedido
