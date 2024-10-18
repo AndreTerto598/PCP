@@ -263,6 +263,7 @@
                                         <th>Quantidade</th>
                                         <th>Tipo</th>
                                         <th>Unidade de Medida</th>
+                                        <th>Gramatura</th>
                                         <th>Ações</th>
                                     </tr>
                                 </thead>
@@ -273,6 +274,7 @@
                                         <td>{{ item.quantidade_tela_formatada }}</td>
                                         <td>{{ item.tipo_tela }}</td>
                                         <td>{{ item.unidade_medida }}</td>
+                                        <td>{{item.gramatura}}</td>
                                         <td>
                                             <button class="btn btn-warning btn-sm" data-toggle="modal"
                                                 data-target="#editItemModal{{ item.id }}">
@@ -321,6 +323,12 @@
                                                             <label for="editItemUnit">Unidade de Medida</label>
                                                             <input type="text" class="form-control"
                                                                 name="unidade_medida" value="{{ item.unidade_medida }}"
+                                                                required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="editItemGr">Gramatura</label>
+                                                            <input type="text" class="form-control"
+                                                                name="gramatura" value="{{ item.gramatura }}"
                                                                 required>
                                                         </div>
                                                         <button type="submit" class="btn btn-primary">Salvar

@@ -352,7 +352,7 @@
                                                     checked {% endif %}>
                                                 <label class="form-check-label">{{ tecido.nome_tela }} ({{
                                                     tecido.unidade_medida }})</label>
-                                                <input type="number" class="form-control"
+                                                <input type="text" class="form-control"
                                                     name="quantidade_tecido_{{ tecido.id }}"
                                                     placeholder="Quantidade utilizada" min="0"
                                                     value="{{ get_quantidade_tecido(tecido.nome_tela) }}">
@@ -369,7 +369,7 @@
                                                     checked {% endif %}>
                                                 <label class="form-check-label">{{ alca.nome_alca }} ({{
                                                     alca.unidade_medida }})</label>
-                                                <input type="number" class="form-control"
+                                                <input type="text" class="form-control"
                                                     name="quantidade_alca_{{ alca.id }}"
                                                     placeholder="Quantidade utilizada" min="0"
                                                     value="{{ get_quantidade_alca(alca.nome_alca) }}">
@@ -484,7 +484,7 @@
                     <div class="form-group">
                         <label>${nome} (${tipo})</label>
                         <input type="hidden" name="insumo_ids[]" value="${id}">
-                        <input type="number" class="form-control" name="quantidade_insumo_${id}" placeholder="Quantidade utilizada" min="0" required>
+                        <input type="text" class="form-control" name="quantidade_insumo_${id}" placeholder="Quantidade utilizada" min="0" required>
                         <button type="button" class="btn btn-danger btn-sm mt-1" onclick="removerInsumo(${id})">Remover</button>
                     </div>
                 `;
@@ -500,6 +500,18 @@
             }
         }
     </script>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function (event) {
+        // Seleciona todos os campos de quantidade de insumos
+        const quantidadeCampos = document.querySelectorAll('input[name^="quantidade_insumo_"]');
+        
+        quantidadeCampos.forEach(function (campo) {
+            // Substitui a vírgula por ponto no valor do campo
+            campo.value = campo.value.replace(',', '.');
+        });
+    });
+</script>
 
 </body>
 

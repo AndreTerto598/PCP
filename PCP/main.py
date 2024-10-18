@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from flask_migrate import Migrate
 from datetime import datetime
+import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'TERTOPCP'
@@ -30,12 +31,14 @@ class Estoque_tecido(db.Model):
     quantidade_tela = db.Column(db.Float, nullable=False)
     tipo_tela = db.Column(db.String(100), nullable=False)
     unidade_medida = db.Column(db.String(50), nullable=False)
+    gramatura = db.Column(db.Float, nullable=True)
 
-    def __init__(self, nome_tela, quantidade_tela, tipo_tela, unidade_medida):
+    def __init__(self, nome_tela, quantidade_tela, tipo_tela, unidade_medida, gramatura):
         self.nome_tela = nome_tela
         self.quantidade_tela = quantidade_tela
         self.tipo_tela = tipo_tela
         self.unidade_medida = unidade_medida
+        self.gramatura = gramatura
 
 
 # Função para obter a quantidade de um tecido pelo nome
@@ -71,6 +74,7 @@ class Estoque_alca(db.Model):
 class PedidoCliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome_cliente = db.Column(db.String(255), nullable=False)
+    tipo_produto = db.Column(db.String(255), nullable=True)
     produto = db.Column(db.String(255), nullable=False)
     data_emissao = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     data_entrega = db.Column(db.DateTime, nullable=False)
@@ -190,6 +194,7 @@ def tecido():
             'quantidade_tela_formatada': formatar_quantidade(item.quantidade_tela),  # Exibição formatada
             'tipo_tela': item.tipo_tela,
             'unidade_medida': item.unidade_medida,
+            'gramatura': formatar_quantidade(item.gramatura)
         }
         itens_formatados.append(item_formatado)
 
@@ -203,15 +208,16 @@ def add_item():
     quantidade_tela = request.form['quantidade_tela'].replace(',', '.')  # Substituir vírgula por ponto
     tipo_tela = request.form['tipo_tela']
     unidade_medida = request.form['unidade_medida']
+    gramatura = request.form['gramatura'].replace(',', '.')
     
     # Converter quantidade para float
     try:
-        quantidade_tela = float(quantidade_tela)
+        quantidade_tela, gramatura = float(quantidade_tela, gramatura)
     except ValueError:
         flash('Por favor, insira uma quantidade válida.')
         return redirect(url_for('tecido'))
     
-    novo_item = Estoque_tecido(nome_tela=nome_tela, quantidade_tela=quantidade_tela, tipo_tela=tipo_tela, unidade_medida=unidade_medida)
+    novo_item = Estoque_tecido(nome_tela=nome_tela, quantidade_tela=quantidade_tela, tipo_tela=tipo_tela, unidade_medida=unidade_medida,gramatura=gramatura)
     db.session.add(novo_item)
     db.session.commit()
     
@@ -228,10 +234,16 @@ def edit_item(id):
     quantidade_tela = request.form['quantidade_tela'].replace(',', '.')  # Substituir vírgula por ponto
     item.tipo_tela = request.form['tipo_tela']
     item.unidade_medida = request.form['unidade_medida']
+    gramatura = request.form['gramatura'].replace(',', '.')
 
     # Converter quantidade para float
     try:
         item.quantidade_tela = float(quantidade_tela)
+    except ValueError:
+        flash('Por favor, insira uma quantidade válida.')
+        return redirect(url_for('tecido'))
+    try:
+        item.gramatura = float(gramatura)
     except ValueError:
         flash('Por favor, insira uma quantidade válida.')
         return redirect(url_for('tecido'))
@@ -383,6 +395,7 @@ def add_pedido():
     
 
     nome_cliente = request.form['nome_cliente']
+    tipo_produto = request.form['tipo_produto']
     produto = request.form['produto']
     data_emissao = datetime.strptime(request.form['data_emissao'], '%Y-%m-%d')
     data_entrega = datetime.strptime(request.form['data_entrega'], '%Y-%m-%d')
@@ -402,8 +415,10 @@ def add_pedido():
     quantidade_volumes = request.form['quantidade_volumes']
     observacao = request.form['observacao']
 
+
     novo_pedido = PedidoCliente(
         nome_cliente=nome_cliente,
+        tipo_produto=tipo_produto,
         produto=produto,
         data_emissao=data_emissao,
         data_entrega=data_entrega,
@@ -428,6 +443,7 @@ def add_pedido():
 # Rota para Cadastro de Big Bags
 @app.route('/add_bigbag', methods=['POST'])
 def add_bigbag():
+
     descricao_ficha = request.form.get('ficha')  # Obtém a descrição da ficha
     print(f'Ficha: {descricao_ficha}')
 
@@ -445,7 +461,7 @@ def add_bigbag():
     entregador = request.form.get('entregador')
     emissor_pedido = request.form.get('emissor_pedido')
     estampa = request.form.get('estampa')
-    quantidade = request.form.get('quantidade')
+    quantidade = int(request.form.get('quantidade'))  # Quantidade de Big Bags
     quantidade_volumes = request.form.get('quantidade_volumes')
     observacao = request.form.get('observacao')
     status = request.form.get('status')
@@ -463,15 +479,17 @@ def add_bigbag():
         quantidade_volumes=quantidade_volumes,
         observacao=observacao,
         status=status,
-        ficha_id=ficha.id  # Aqui você pode usar o ID da ficha
+        ficha_id=ficha.id  # ID da ficha técnica selecionada
     )
 
     # Adicionar o pedido ao banco de dados
     db.session.add(novo_pedido_bigbag)
     db.session.commit()
 
+
+
     # Exibir mensagem de sucesso
-    flash('Pedido de Big Bags cadastrado com sucesso!')
+    flash('Pedido de Big Bags cadastrado com sucesso e baixa de estoque realizada!')
     return redirect(url_for('Op_andamento'))
 
 # Rota para exibir o formulário de cadastro de pedidos
@@ -488,14 +506,82 @@ def Op_andamento():
     pedidos = PedidoCliente.query.filter_by(status='andamento').all()
     return render_template('Op_andamento.html', pedidos=pedidos)
 
-#Rota para finalizar pedido
+# Rota para finalizar pedido e descontar insumos do estoque
 @app.route('/finalizar_pedido/<int:id>', methods=['POST'])
 def finalizar_pedido(id):
+    print(f"Pedido ID: {id}")  # Verifica se a rota está sendo chamada
+
+    # Buscar o pedido
     pedido = PedidoCliente.query.get_or_404(id)
+    print(f"Pedido encontrado: {pedido}")
+    print(f"Ficha ID do Pedido: {pedido.ficha_id}")  # Verificar o ficha_id do pedido
+
+    # Verificar se o pedido tem uma ficha técnica associada
+    if pedido.ficha_id:
+        # Buscar a ficha técnica associada ao pedido
+        ficha = FichaTecnica.query.get(pedido.ficha_id)
+        if not ficha:
+            flash('Ficha técnica não encontrada.')
+            return redirect(url_for('Op_andamento'))
+        print(f"Ficha técnica: {ficha.descricao}")
+
+        # Converter os insumos da ficha de string para lista
+        insumos = eval(ficha.insumos) if ficha.insumos else []
+        print(f"Insumos da ficha técnica: {insumos}")
+
+        if not insumos:
+            flash('Nenhum insumo encontrado para a ficha técnica.')
+            return redirect(url_for('Op_andamento'))
+
+        # Descontar insumos do estoque com base na quantidade do pedido
+        for insumo in insumos:
+            nome = insumo['nome']
+            quantidade_ficha = float(insumo['quantidade'].replace(',', '.'))  # Quantidade para uma unidade do produto
+            quantidade_total = quantidade_ficha * pedido.quantidade  # Multiplica pela quantidade do pedido
+
+            print(f"Processando insumo: {nome}, Quantidade Total: {quantidade_total}")
+
+            # Verificar se o insumo é tecido ou alça e atualizar o estoque correspondente
+            if insumo['tipo'] == 'Tecido':
+                tecido = Estoque_tecido.query.filter_by(nome_tela=nome).first()
+                if tecido:
+                    print(f"Estoque atual de tecido {nome}: {tecido.quantidade_tela}")
+                    if tecido.quantidade_tela >= quantidade_total:
+                        tecido.quantidade_tela -= quantidade_total  # Descontar do estoque
+                        print(f"Novo estoque de tecido {nome}: {tecido.quantidade_tela}")
+                    else:
+                        flash(f'Estoque insuficiente de {nome}.')
+                        return redirect(url_for('Op_andamento'))
+                else:
+                    flash(f'Tecido {nome} não encontrado.')
+                    return redirect(url_for('Op_andamento'))
+
+            elif insumo['tipo'] == 'Alça':
+                alca = Estoque_alca.query.filter_by(nome_alca=nome).first()
+                if alca:
+                    print(f"Estoque atual de alça {nome}: {alca.quantidade_alca}")
+                    if alca.quantidade_alca >= quantidade_total:
+                        alca.quantidade_alca -= quantidade_total  # Descontar do estoque
+                        print(f"Novo estoque de alça {nome}: {alca.quantidade_alca}")
+                    else:
+                        flash(f'Estoque insuficiente de {nome}.')
+                        return redirect(url_for('Op_andamento'))
+                else:
+                    flash(f'Alça {nome} não encontrada.')
+                    return redirect(url_for('Op_andamento'))
+    
+    else:
+        # Caso não haja ficha técnica associada
+        print("Pedido sem ficha técnica, finalizando de outra maneira.")
+        flash('Pedido finalizado sem ficha técnica associada.')
+
+    # Atualizar o status do pedido para 'finalizado'
     pedido.status = 'finalizado'
     db.session.commit()
-    return redirect(url_for('Op_andamento'))
+    print(f"Status do pedido {pedido.id}: {pedido.status}")
 
+    flash('Pedido finalizado com sucesso!')
+    return redirect(url_for('Op_andamento'))
 
 #Rota de Pedidos Finalizados
 @app.route('/Op_finalizada', methods=['GET', 'POST'])
@@ -540,6 +626,7 @@ def cadastrar_ficha():
     custo_producao = request.form['custo_producao']
     
     # Captura insumos selecionados e suas respectivas quantidades
+    
     insumos = []
     for insumo_id in request.form.getlist('insumo_ids[]'):
         quantidade = request.form.get(f'quantidade_insumo_{insumo_id}')
