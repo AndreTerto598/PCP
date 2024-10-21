@@ -590,7 +590,7 @@ def finalizar_pedido(id):
 
         # Atualizar o status do pedido para 'finalizado'
         pedido.status = 'finalizado'
-        pedido.operador = current_user.usuario
+        pedido.operador = current_user.username
         db.session.commit()
         print(f"Status do pedido {pedido.id}: {pedido.status}")
         flash('Pedido Big Bag finalizado com sucesso!')
@@ -678,7 +678,6 @@ def finalizar_pedido(id):
 
     # Atualizar o status do pedido para 'finalizado'
     pedido.status = 'finalizado'
-    pedido.operador = current_user.usuario
     db.session.commit()
     print(f"Status do pedido {pedido.id}: {pedido.status}")
 

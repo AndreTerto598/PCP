@@ -249,10 +249,12 @@
                             <tr>
                                 <th>Cliente</th>
                                 <th>Produto</th>
+                                <th>Quantidade</th>
                                 <th>Data de Emissão</th>
                                 <th>Data de Entrega</th>
                                 <th>Status</th>
                                 <th>Operador</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -260,6 +262,7 @@
                             <tr>
                                 <td>{{ pedido.nome_cliente }}</td>
                                 <td>{{ pedido.produto }}</td>
+                                <td>{{ pedido.quantidade }}</td>
                                 <td>{{ pedido.data_emissao.strftime('%d/%m/%Y') }}</td>
                                 <td>{{ pedido.data_entrega.strftime('%d/%m/%Y') }}</td>
                                 <td>{{ pedido.status }}</td>
