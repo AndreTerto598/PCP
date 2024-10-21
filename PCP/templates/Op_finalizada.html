@@ -252,6 +252,7 @@
                                 <th>Data de Emissão</th>
                                 <th>Data de Entrega</th>
                                 <th>Status</th>
+                                <th>Operador</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -262,6 +263,7 @@
                                 <td>{{ pedido.data_emissao.strftime('%d/%m/%Y') }}</td>
                                 <td>{{ pedido.data_entrega.strftime('%d/%m/%Y') }}</td>
                                 <td>{{ pedido.status }}</td>
+                                <td>{{ pedido.operador}}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

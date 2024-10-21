@@ -6,6 +6,7 @@ from werkzeug.security import check_password_hash
 from flask_migrate import Migrate
 from datetime import datetime
 import json
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'TERTOPCP'
@@ -14,10 +15,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+# Configurar o LoginManager
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
 #Modelo de dados para o Cadastro
-class Usuario(db.Model):
+class Usuario(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    usuario = db.Column(db.String(100), nullable=False)
+    usuario = db.Column(db.String(100), unique=True)
     email = db.Column(db.String(100), nullable=False)
     senha = db.Column(db.String(255), nullable=False)
 
@@ -41,6 +47,10 @@ class Estoque_tecido(db.Model):
         self.gramatura = gramatura
 
 
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Usuario.query.get(int(user_id))
 # Função para obter a quantidade de um tecido pelo nome
 def get_quantidade_tecido(nome_tela):
     tecido = Estoque_tecido.query.filter_by(nome_tela=nome_tela).first()
@@ -92,6 +102,7 @@ class PedidoCliente(db.Model):
     status = db.Column(db.String(50), nullable=False, default='andamento')
     ficha_id = db.Column(db.Integer, db.ForeignKey('ficha_tecnica.id'))  # Aqui você pode usar o ID da ficha
     ficha = db.relationship('FichaTecnica', backref='pedidos')
+    operador = db.Column(db.String(100))
 
     def __repr__(self):
         return f'<PedidoCliente {self.nome_cliente}>'
@@ -141,6 +152,8 @@ def processar_cadastro():
 def login():
     return render_template('login.html')
 
+from flask_login import login_user
+
 @app.route('/Login', methods=['POST'])
 def processar_login():
     login_usuario = request.form['login_usuario']
@@ -149,25 +162,27 @@ def processar_login():
     usuario = Usuario.query.filter_by(usuario=login_usuario).first()
 
     if usuario and check_password_hash(usuario.senha, login_senha):
-        session['login_usuario'] = login_usuario
+        login_user(usuario)  # Autentica o usuário
         return redirect(url_for('principal'))
     else:
         flash('Login Inválido', 'error')
         return render_template('login.html', login_invalido=True)
     
-@app.route('/principal', methods = ['GET', 'POST'])
+@app.route('/principal', methods=['GET', 'POST'])
+@login_required
 def principal():
-    if 'login_usuario' not in session:
-        return redirect(url_for('login'))
     return render_template('principal.html')
 
 #Fim da página de Login
 
 #Logout
 
+from flask_login import logout_user
+
 @app.route('/logout')
+@login_required
 def logout():
-    session.pop('username', None)
+    logout_user()
     return redirect(url_for('login'))
 
 #Página de Estoque de Tecidos
@@ -575,6 +590,7 @@ def finalizar_pedido(id):
 
         # Atualizar o status do pedido para 'finalizado'
         pedido.status = 'finalizado'
+        pedido.operador = current_user.usuario
         db.session.commit()
         print(f"Status do pedido {pedido.id}: {pedido.status}")
         flash('Pedido Big Bag finalizado com sucesso!')
@@ -662,6 +678,7 @@ def finalizar_pedido(id):
 
     # Atualizar o status do pedido para 'finalizado'
     pedido.status = 'finalizado'
+    pedido.operador = current_user.usuario
     db.session.commit()
     print(f"Status do pedido {pedido.id}: {pedido.status}")
 
@@ -679,9 +696,9 @@ def Op_finalizada():
         pedidos = PedidoCliente.query.filter(
             PedidoCliente.status == 'finalizado',
             PedidoCliente.nome_cliente.ilike(f'%{search_query}%')
-        ).paginate(page=page, per_page=10)
+        ).order_by(PedidoCliente.id.desc()).paginate(page=page, per_page=10)
     else:
-        pedidos = PedidoCliente.query.filter_by(status='finalizado').paginate(page=page, per_page=10)
+        pedidos = PedidoCliente.query.filter_by(status='finalizado').order_by(PedidoCliente.id.desc()).paginate(page=page, per_page=10)
 
     return render_template('Op_finalizada.html', pedidos=pedidos, search_query=search_query)
 
