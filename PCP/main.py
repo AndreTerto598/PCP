@@ -371,40 +371,36 @@ def search_fichas():
     fichas_list = [{'descricao': fichas.descricao} for fichas in fichas]
     return jsonify(fichas_list)  # Retorna os dados em formato JSON
 
-# Rota para processar o cadastro de Sacos e Bolsas
 @app.route('/add_pedido', methods=['POST'])
 def add_pedido():
-     # Capturando os dados do formulário
+    # Capturando os dados do formulário
     nome_tela = request.form.get('tela')
     print(f'Tela: {nome_tela}')
 
-    nome_alca = request.form.get('alca')
-    print(f'Alca: {nome_alca}')
-
-        # Verificar se a Tela existe
+    # Verificar se a Tela existe
     tela = Estoque_tecido.query.filter_by(nome_tela=nome_tela).first()
     if not tela:
         flash('Tela não encontrada.')
         return redirect(url_for('Op_cadastro'))
-    
-    # Verificar se a Alça existe
-    alca = Estoque_alca.query.filter_by(nome_alca=nome_alca).first()
-    if not alca:
-        flash('Alça não encontrada.')
-        return redirect(url_for('Op_cadastro'))
-    
+
+    # Tornar a verificação de Alça opcional para Sacos
+    tipo_produto = request.form.get('tipo_produto', '').lower()  # Ignorar maiúsculas e minúsculas
+    alca = None
+    if tipo_produto == 'sacola':  # Apenas verificar alça se não for 'Saco'
+        nome_alca = request.form.get('alca')
+        alca = Estoque_alca.query.filter_by(nome_alca=nome_alca).first()
+        if not alca:
+            flash('Alça não encontrada.')
+            return redirect(url_for('Op_cadastro'))
 
     nome_cliente = request.form['nome_cliente']
-    tipo_produto = request.form['tipo_produto']
     produto = request.form['produto']
     data_emissao = datetime.strptime(request.form['data_emissao'], '%Y-%m-%d')
     data_entrega = datetime.strptime(request.form['data_entrega'], '%Y-%m-%d')
     entregador = request.form['entregador']
     emissor_pedido = request.form['emissor_pedido']
-    tamanho_altura = request.form['tamanho_altura']  # Corrigido para refletir os campos de tamanho
-    tamanho_largura = request.form['tamanho_largura']  # Corrigido para refletir os campos de tamanho
-    tela = request.form.get('tela')  # Obter o valor da tela do formulário
-    alca = request.form.get('alca')
+    tamanho_altura = request.form['tamanho_altura']
+    tamanho_largura = request.form['tamanho_largura']
 
     # Convertendo a medida da alça de vírgula para ponto, se necessário
     medida_alca = request.form['medida_alca'].replace(',', '.')  # Substitui a vírgula por ponto
@@ -414,7 +410,6 @@ def add_pedido():
     quantidade = request.form['quantidade']
     quantidade_volumes = request.form['quantidade_volumes']
     observacao = request.form['observacao']
-
 
     novo_pedido = PedidoCliente(
         nome_cliente=nome_cliente,
@@ -426,8 +421,8 @@ def add_pedido():
         emissor_pedido=emissor_pedido,
         tamanho_altura=tamanho_altura,
         tamanho_largura=tamanho_largura,
-        tela=tela,  # Usar o valor da tela do formulário
-        alca=alca,
+        tela=nome_tela,  # Usar o valor da tela do formulário
+        alca=alca.nome_alca if alca else None,  # Ajustado para ser None se alça não existir
         medida_alca=medida_alca,
         estampa=estampa,
         quantidade=quantidade,
@@ -443,7 +438,6 @@ def add_pedido():
 # Rota para Cadastro de Big Bags
 @app.route('/add_bigbag', methods=['POST'])
 def add_bigbag():
-
     descricao_ficha = request.form.get('ficha')  # Obtém a descrição da ficha
     print(f'Ficha: {descricao_ficha}')
 
@@ -453,11 +447,13 @@ def add_bigbag():
         flash('Ficha não encontrada.')
         return redirect(url_for('Op_cadastro'))
     
+
     # Obtendo os dados do formulário de Big Bags
     nome_cliente = request.form.get('nome_cliente')
+    tipo_produto = request.form.get('tipo_produto', '').lower()  # Ignorar maiúsculas e minúsculas
     produto = request.form.get('produto')
-    data_emissao = request.form.get('data_emissao')
-    data_entrega = request.form.get('data_entrega')
+    data_emissao = datetime.strptime(request.form.get('data_emissao'), '%Y-%m-%d')
+    data_entrega = datetime.strptime(request.form.get('data_entrega'), '%Y-%m-%d')
     entregador = request.form.get('entregador')
     emissor_pedido = request.form.get('emissor_pedido')
     estampa = request.form.get('estampa')
@@ -469,6 +465,7 @@ def add_bigbag():
     # Criar o objeto do pedido
     novo_pedido_bigbag = PedidoCliente(
         nome_cliente=nome_cliente,
+        tipo_produto=tipo_produto,
         produto=produto,
         data_emissao=data_emissao,
         data_entrega=data_entrega,
@@ -485,8 +482,6 @@ def add_bigbag():
     # Adicionar o pedido ao banco de dados
     db.session.add(novo_pedido_bigbag)
     db.session.commit()
-
-
 
     # Exibir mensagem de sucesso
     flash('Pedido de Big Bags cadastrado com sucesso e baixa de estoque realizada!')
@@ -506,7 +501,6 @@ def Op_andamento():
     pedidos = PedidoCliente.query.filter_by(status='andamento').all()
     return render_template('Op_andamento.html', pedidos=pedidos)
 
-# Rota para finalizar pedido e descontar insumos do estoque
 @app.route('/finalizar_pedido/<int:id>', methods=['POST'])
 def finalizar_pedido(id):
     print(f"Pedido ID: {id}")  # Verifica se a rota está sendo chamada
@@ -515,109 +509,156 @@ def finalizar_pedido(id):
     pedido = PedidoCliente.query.get_or_404(id)
     print(f"Pedido encontrado: {pedido}")
     print(f"Ficha ID do Pedido: {pedido.ficha_id}")  # Verificar o ficha_id do pedido
-
-
-     # Verificar o tipo de produto
-    tipo_produto = pedido.tipo_produto  # supondo que você tenha esse campo no modelo
-    altura = pedido.tamanho_altura  # em metros
-    largura = pedido.tamanho_largura  # em metros
-    tipo_tela = pedido.tipo_tela  # PLANA ou TUBULAR
-    quantidade = pedido.quantidade  # quantidade do pedido
-    gramatura_tela = pedido.gramatura_tela  # gramatura em KG
-
-    if tipo_produto == 'Saco':
-        corte = altura + 0.03  # adiciona 3 cm para sacos
-    elif tipo_produto == 'Sacola':
-        corte = altura + 0.05  # adiciona 5 cm para sacolas
-    else:
-        flash('Tipo de produto inválido.')
-        return redirect(url_for('Op_andamento'))
-
-    if tipo_tela == 'PLANA':
-        largura_tela = largura  # largura em metros
-    elif tipo_tela == 'TUBULAR':
-        largura_tela = largura * 2  # dobra a largura para tubular
-    else:
-        flash('Tipo de tela inválido.')
-        return redirect(url_for('Op_andamento'))
     
-     # Cálculo da quantidade total de material necessário
-    quantidade_total = largura_tela * corte * quantidade * gramatura_tela
-    print(f"Quantidade total de material necessário: {quantidade_total}")
 
-    # Descontar do estoque
-    # Aqui você precisa de lógica para verificar e descontar do estoque correspondente
-    tecido = Estoque_tecido.query.filter_by(nome_tela=pedido.tela).first()
-    if tecido:
-        print(f"Estoque atual de tecido {pedido.tela}: {tecido.quantidade_tela}")
+    
+    # Verificar o tipo de produto
+    tipo_produto = pedido.tipo_produto.strip().lower() if pedido.tipo_produto else None
+    print(f"Tipo de produto: {tipo_produto}")
+
+    # Caso seja Big Bag, não faz verificação de tecido
+    if tipo_produto == 'big bag':
+        print("Tipo de produto: Big Bag. Ignorando verificação de tecido.")
+
+        # Verificar se o pedido tem uma ficha técnica associada
+        if pedido.ficha_id:
+            ficha = FichaTecnica.query.get(pedido.ficha_id)
+            if not ficha:
+                flash('Ficha técnica não encontrada.')
+                return redirect(url_for('Op_andamento'))
+            print(f"Ficha técnica: {ficha.descricao}")
+
+            # Converter os insumos da ficha de string para lista
+            insumos = eval(ficha.insumos) if ficha.insumos else []
+            print(f"Insumos da ficha técnica: {insumos}")
+
+            if not insumos:
+                flash('Nenhum insumo encontrado para a ficha técnica.')
+                return redirect(url_for('Op_andamento'))
+
+            # Descontar insumos do estoque com base na quantidade do pedido
+            for insumo in insumos:
+                nome = insumo['nome']
+                quantidade_ficha = float(insumo['quantidade'].replace(',', '.'))  # Quantidade para uma unidade do produto
+                quantidade_total_insumo = quantidade_ficha * pedido.quantidade  # Multiplica pela quantidade do pedido
+
+                print(f"Processando insumo: {nome}, Quantidade Total: {quantidade_total_insumo}")
+
+                # Verificar se o insumo é tecido ou alça e atualizar o estoque correspondente
+                if insumo['tipo'] == 'Tecido':
+                    tecido_insumo = Estoque_tecido.query.filter_by(nome_tela=nome).first()
+                    if tecido_insumo:
+                        print(f"Estoque atual de tecido {nome}: {tecido_insumo.quantidade_tela}")
+                        if tecido_insumo.quantidade_tela >= quantidade_total_insumo:
+                            tecido_insumo.quantidade_tela -= quantidade_total_insumo  # Descontar do estoque
+                            print(f"Novo estoque de tecido {nome}: {tecido_insumo.quantidade_tela}")
+                        else:
+                            flash(f'Estoque insuficiente de {nome}.')
+                            return redirect(url_for('Op_andamento'))
+                    else:
+                        flash(f'Tecido {nome} não encontrado.')
+                        return redirect(url_for('Op_andamento'))
+
+                elif insumo['tipo'] == 'Alça':
+                    alca = Estoque_alca.query.filter_by(nome_alca=nome).first()
+                    if alca:
+                        print(f"Estoque atual de alça {nome}: {alca.quantidade_alca}")
+                        if alca.quantidade_alca >= quantidade_total_insumo:
+                            alca.quantidade_alca -= quantidade_total_insumo  # Descontar do estoque
+                            print(f"Novo estoque de alça {nome}: {alca.quantidade_alca}")
+                        else:
+                            flash(f'Estoque insuficiente de {nome}.')
+                            return redirect(url_for('Op_andamento'))
+                    else:
+                        flash(f'Alça {nome} não encontrada.')
+                        return redirect(url_for('Op_andamento'))
+
+        # Atualizar o status do pedido para 'finalizado'
+        pedido.status = 'finalizado'
+        db.session.commit()
+        print(f"Status do pedido {pedido.id}: {pedido.status}")
+        flash('Pedido Big Bag finalizado com sucesso!')
+        return redirect(url_for('Op_andamento'))
+
+    # Para Saco e Sacola, não precisa da ficha técnica
+    # Verificar o tecido diretamente
+    else:
+        tecido = Estoque_tecido.query.filter_by(nome_tela=pedido.tela).first()
+        if not tecido:
+            flash(f'Tecido {pedido.tela} não encontrado no estoque.')
+            return redirect(url_for('Op_andamento'))
+
+        # Definir o tipo de tela com base no estoque de tecidos
+        tipo_tela = tecido.tipo_tela  # 'PLANA' ou 'TUBULAR'
+        print(f"Tipo de tela: {tipo_tela}")
+
+        # Verifique se o tipo de tela é válido
+        if tipo_tela not in ['PLANA', 'TUBULAR']:
+            flash('Tipo de tela inválido.')
+            return redirect(url_for('Op_andamento'))
+
+        # Obter a gramatura do tecido
+        gramatura_tela = tecido.gramatura / 1000  # Considera a gramatura em kg
+
+        # Certifique-se de que altura e largura sejam números
+        try:
+            altura = float(pedido.tamanho_altura)  # Converta para float
+            largura = float(pedido.tamanho_largura)  # Converta para float
+        except ValueError:
+            flash('Erro ao converter os tamanhos de altura ou largura.')
+            return redirect(url_for('Op_andamento'))
+
+        altura = altura / 100  # Convertendo para metros
+        largura = largura / 100  # Convertendo para metros
+
+        # Verificar o tipo de produto
+        if tipo_produto == 'saco':
+            corte = altura + 0.03  # adiciona 3 cm para sacos
+        elif tipo_produto == 'sacola':
+            corte = altura + 0.05  # adiciona 5 cm para sacolas
+        else:
+            flash('Tipo de produto inválido.')
+            return redirect(url_for('Op_andamento'))
+
+        # Cálculo da largura da tela
+        if tipo_tela == 'PLANA':
+            largura_tela = largura  # largura em metros
+        elif tipo_tela == 'TUBULAR':
+            largura_tela = largura * 2  # dobra a largura para tubular
+        else:
+            flash('Tipo de tela inválido.')
+            return redirect(url_for('Op_andamento'))
+        
+
+        # Cálculo da quantidade total de material necessário
+        quantidade = pedido.quantidade
+        quantidade_total = largura_tela * corte * quantidade * gramatura_tela
+        print(f"Quantidade total de material necessário: {quantidade_total}")
+
+        # Verificar e descontar do estoque do tecido
         if tecido.quantidade_tela >= quantidade_total:
             tecido.quantidade_tela -= quantidade_total
             print(f"Novo estoque de tecido {pedido.tela}: {tecido.quantidade_tela}")
         else:
             flash(f'Estoque insuficiente de {pedido.tela}.')
             return redirect(url_for('Op_andamento'))
-    else:
-        flash(f'Tecido {pedido.tela} não encontrado.')
-        return redirect(url_for('Op_andamento'))
 
-    # Verificar se o pedido tem uma ficha técnica associada
-    if pedido.ficha_id:
-        # Buscar a ficha técnica associada ao pedido
-        ficha = FichaTecnica.query.get(pedido.ficha_id)
-        if not ficha:
-            flash('Ficha técnica não encontrada.')
+         # Verificar a alça no estoque apenas para sacolas
+    if tipo_produto == 'sacola':  # Verificar alça apenas se for sacola
+        alca = Estoque_alca.query.filter_by(nome_alca=pedido.alca).first()  # Buscar a alça pelo nome
+        if alca:
+            quantidade_total_alca = ((pedido.quantidade * 2) * float(pedido.medida_alca)) / 100  # Cálculo da quantidade total de alça necessária
+            print(f"Quantidade total de alça necessária: {quantidade_total_alca}")
+
+            if alca.quantidade_alca >= quantidade_total_alca:
+                alca.quantidade_alca -= quantidade_total_alca  # Descontar do estoque
+                print(f"Novo estoque de alça {alca.nome_alca}: {alca.quantidade_alca}")
+            else:
+                flash(f'Estoque insuficiente de alça {alca.nome_alca}.')
+                return redirect(url_for('Op_andamento'))
+        else:
+            flash(f'Alça {pedido.alca} não encontrada no estoque.')
             return redirect(url_for('Op_andamento'))
-        print(f"Ficha técnica: {ficha.descricao}")
-
-        # Converter os insumos da ficha de string para lista
-        insumos = eval(ficha.insumos) if ficha.insumos else []
-        print(f"Insumos da ficha técnica: {insumos}")
-
-        if not insumos:
-            flash('Nenhum insumo encontrado para a ficha técnica.')
-            return redirect(url_for('Op_andamento'))
-
-        # Descontar insumos do estoque com base na quantidade do pedido
-        for insumo in insumos:
-            nome = insumo['nome']
-            quantidade_ficha = float(insumo['quantidade'].replace(',', '.'))  # Quantidade para uma unidade do produto
-            quantidade_total = quantidade_ficha * pedido.quantidade  # Multiplica pela quantidade do pedido
-
-            print(f"Processando insumo: {nome}, Quantidade Total: {quantidade_total}")
-
-            # Verificar se o insumo é tecido ou alça e atualizar o estoque correspondente
-            if insumo['tipo'] == 'Tecido':
-                tecido = Estoque_tecido.query.filter_by(nome_tela=nome).first()
-                if tecido:
-                    print(f"Estoque atual de tecido {nome}: {tecido.quantidade_tela}")
-                    if tecido.quantidade_tela >= quantidade_total:
-                        tecido.quantidade_tela -= quantidade_total  # Descontar do estoque
-                        print(f"Novo estoque de tecido {nome}: {tecido.quantidade_tela}")
-                    else:
-                        flash(f'Estoque insuficiente de {nome}.')
-                        return redirect(url_for('Op_andamento'))
-                else:
-                    flash(f'Tecido {nome} não encontrado.')
-                    return redirect(url_for('Op_andamento'))
-
-            elif insumo['tipo'] == 'Alça':
-                alca = Estoque_alca.query.filter_by(nome_alca=nome).first()
-                if alca:
-                    print(f"Estoque atual de alça {nome}: {alca.quantidade_alca}")
-                    if alca.quantidade_alca >= quantidade_total:
-                        alca.quantidade_alca -= quantidade_total  # Descontar do estoque
-                        print(f"Novo estoque de alça {nome}: {alca.quantidade_alca}")
-                    else:
-                        flash(f'Estoque insuficiente de {nome}.')
-                        return redirect(url_for('Op_andamento'))
-                else:
-                    flash(f'Alça {nome} não encontrada.')
-                    return redirect(url_for('Op_andamento'))
-    
-    else:
-        # Caso não haja ficha técnica associada
-        print("Pedido sem ficha técnica, finalizando de outra maneira.")
-        flash('Pedido finalizado sem ficha técnica associada.')
 
     # Atualizar o status do pedido para 'finalizado'
     pedido.status = 'finalizado'
