@@ -171,7 +171,17 @@ def processar_login():
 @app.route('/principal', methods=['GET', 'POST'])
 @login_required
 def principal():
-    return render_template('principal.html')
+    pedidos_em_andamento = PedidoCliente.query.filter_by(status='andamento').count()
+    pedidos_finalizados = PedidoCliente.query.filter_by(status='finalizado').count()
+    total_pedidos = pedidos_em_andamento + pedidos_finalizados
+    
+    
+    print(f'Total de Pedidos: {total_pedidos}, Pedidos em Andamento: {pedidos_em_andamento}, Pedidos Finalizados: {pedidos_finalizados}')
+    
+    return render_template('principal.html', 
+                           pedidos_em_andamento=pedidos_em_andamento, 
+                           pedidos_finalizados=pedidos_finalizados, 
+                           total_pedidos=total_pedidos)
 
 #Fim da página de Login
 
