@@ -7,8 +7,16 @@ from flask_migrate import Migrate
 from datetime import datetime
 import json
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_mail import Mail, Message
 
 app = Flask(__name__)
+app.config['MAIL_SERVER'] = 'smtp.sacacho.com.br'  # Altere para seu servidor SMTP
+app.config['MAIL_PORT'] = 587  # Porta para TLS
+app.config['MAIL_USERNAME'] = 'adm2@sacacho.com.br'
+app.config['MAIL_PASSWORD'] = 'Sacacho@947'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = False
+mail = Mail(app)
 app.config['SECRET_KEY'] = 'TERTOPCP'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg://postgres:123@localhost/PCP'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -19,6 +27,14 @@ migrate = Migrate(app, db)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+
+def send_notification_email(message):
+    msg = Message('Notificação de Pedido',
+                  sender='adm2@sacacho.com.br',
+                  recipients=['adm2@sacacho.com.br'])
+    msg.body = message
+    mail.send(msg)
 
 #Modelo de dados para o Cadastro
 class Usuario(UserMixin, db.Model):
@@ -435,6 +451,7 @@ def add_pedido():
     quantidade = request.form['quantidade']
     quantidade_volumes = request.form['quantidade_volumes']
     observacao = request.form['observacao']
+    status = request.form.get('status')
 
     novo_pedido = PedidoCliente(
         nome_cliente=nome_cliente,
@@ -452,13 +469,17 @@ def add_pedido():
         estampa=estampa,
         quantidade=quantidade,
         quantidade_volumes=quantidade_volumes,
-        observacao=observacao
+        observacao=observacao,
+        status=status
     )
-
+    
+    
     db.session.add(novo_pedido)
     db.session.commit()
+    send_notification_email('Atenção! Um novo pedido cadastrado!')
     flash('Pedido cadastrado com sucesso!')
     return redirect(url_for('Op_andamento'))
+
 
 # Rota para Cadastro de Big Bags
 @app.route('/add_bigbag', methods=['POST'])
@@ -503,11 +524,12 @@ def add_bigbag():
         status=status,
         ficha_id=ficha.id  # ID da ficha técnica selecionada
     )
-
+    
+    
     # Adicionar o pedido ao banco de dados
     db.session.add(novo_pedido_bigbag)
     db.session.commit()
-
+    send_notification_email('Atenção! Um novo pedido cadastrado!')
     # Exibir mensagem de sucesso
     flash('Pedido de Big Bags cadastrado com sucesso e baixa de estoque realizada!')
     return redirect(url_for('Op_andamento'))
@@ -600,7 +622,7 @@ def finalizar_pedido(id):
 
         # Atualizar o status do pedido para 'finalizado'
         pedido.status = 'finalizado'
-        pedido.operador = current_user.username
+        pedido.operador = current_user.usuario
         db.session.commit()
         print(f"Status do pedido {pedido.id}: {pedido.status}")
         flash('Pedido Big Bag finalizado com sucesso!')
@@ -688,6 +710,7 @@ def finalizar_pedido(id):
 
     # Atualizar o status do pedido para 'finalizado'
     pedido.status = 'finalizado'
+    pedido.operador = current_user.usuario
     db.session.commit()
     print(f"Status do pedido {pedido.id}: {pedido.status}")
 

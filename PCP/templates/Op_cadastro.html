@@ -168,22 +168,19 @@
                         </li>
 
                         <!-- Nav Item - Alerts -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter"></span>
-                            </a>
-                            <!-- Dropdown - Alerts -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Alerts Center
-                                </h6>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-                            </div>
-                        </li>
+                            <li class="nav-item dropdown no-arrow mx-1">
+                                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-bell fa-fw"></i>
+                                    <!-- Counter - Alerts -->
+                                    <span class="badge badge-danger badge-counter">0</span>
+                                </a>
+                                <!-- Dropdown - Alerts -->
+                                    <div id="alert-container" class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"aria-labelledby="alertsDropdown">
+                                        <h6 class="dropdown-header">Alerts Center</h6>
+                                            <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                                    </div>
+                            </li>
 
                         <!-- Nav Item - Messages -->
                         <li class="nav-item dropdown no-arrow mx-1">
@@ -210,8 +207,8 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ session['login_usuario']
-                                    }}</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ current_user.usuario }}
+                                </span>
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -479,6 +476,38 @@
         <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js') }}"></script>
         <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js') }}"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+
+                        <script>
+                            // Conectar ao servidor WebSocket
+                            var socket = io();
+                        
+                            // Escutar o evento 'new_order'
+                            socket.on('new_order', function(data) {
+                                // Incrementar o número de alertas no badge
+                                var alertBadge = document.querySelector('.badge-counter');
+                                alertBadge.textContent = parseInt(alertBadge.textContent || '0') + 1;
+                        
+                                // Adicionar o novo alerta ao dropdown
+                                var alertContainer = document.getElementById('alert-container');
+                                var newAlert = document.createElement('a');
+                                newAlert.classList.add('dropdown-item', 'd-flex', 'align-items-center');
+                                newAlert.innerHTML = `
+                                    <div class="mr-3">
+                                        <div class="icon-circle bg-primary">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="small text-gray-500">Novo Pedido</div>
+                                        <span class="font-weight-bold">${data.message}</span>
+                                    </div>
+                                `;
+                                alertContainer.insertBefore(newAlert, alertContainer.firstChild);
+                            });
+                        </script>
+
         <script>
             function showForm(formType) {
                 event.preventDefault(); // Previne comportamento padrão
