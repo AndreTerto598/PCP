@@ -126,19 +126,7 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small"
-                                placeholder="Pesquise por..." aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -246,6 +234,7 @@
                                         <th>Observação</th>
                                         <th>Status</th>
                                         <th>Ações</th>
+                                        <th>Imprimir</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -262,6 +251,10 @@
                                             <form action="{{ url_for('finalizar_pedido', id=pedido.id) }}" method="POST"
                                                 style="display:inline;">
                                                 <button type="submit" class="btn btn-success">Finalizar</button>
+                                        </td>
+                                    </form>
+                                        <td>
+                                            <button onclick="imprimirOP({{ pedido.id }})" class="btn btn-secondary">Imprimir</button>
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -316,6 +309,16 @@
             </div>
         </div>
     </div>
+
+    <script>
+
+function imprimirOP(pedidoId) {
+    // Abre a página de impressão em uma nova aba
+    window.open('/imprimir_op/' + pedidoId, '_blank');
+}
+
+</script>
+
 
     <!-- Bootstrap core JavaScript-->
     <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>

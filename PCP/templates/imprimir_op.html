@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Ordem de Produção - {{ pedido.id }}</title>
+    <link href="{{ url_for('static', filename= 'css/impressao.css') }}" rel="stylesheet">
+</head>
+<body>
+
+<div class="order-container">
+    <h2>Ordem de Produção - {{ pedido.id }}</h2>
+
+    <!-- Dados do Cliente -->
+    <div class="order-section">
+        <div class="section-title">Dados do Cliente</div>
+        <div class="field"><span>Cliente:</span> {{ pedido.nome_cliente }}</div>
+        <div class="field"><span>Entregador:</span> {{ pedido.entregador }}</div>
+        <div class="field"><span>Emissor do Pedido:</span> {{ pedido.emissor_pedido }}</div>
+    </div>
+
+    <!-- Informações do Pedido -->
+    <div class="order-section">
+        <div class="section-title">Informações do Pedido</div>
+        <div class="field"><span>ID do Pedido:</span> {{ pedido.id }}</div>
+        <div class="field"><span>Produto:</span> {{ pedido.produto }}</div>
+        <div class="field"><span>Tipo do Produto:</span> {{ pedido.tipo_produto }}</div>
+        <div class="field"><span>Data de Emissão:</span> {{ pedido.data_emissao.strftime('%d/%m/%Y') }}</div>
+        <div class="field"><span>Data de Entrega:</span> {{ pedido.data_entrega.strftime('%d/%m/%Y') }}</div>
+        <div class="field"><span>Quantidade:</span> {{ pedido.quantidade }}</div>
+        <div class="field"><span>Quantidade de Volumes:</span> {{ pedido.quantidade_volumes }}</div>
+    </div>
+
+    <!-- Especificações do Produto -->
+    <div class="order-section">
+        <div class="section-title">Especificações do Produto</div>
+        <div class="field"><span>Tamanho Altura:</span> {{ pedido.tamanho_altura }}</div>
+        <div class="field"><span>Tamanho Largura:</span> {{ pedido.tamanho_largura }}</div>
+        <div class="field"><span>Tela:</span> {{ pedido.tela }}</div>
+        <div class="field"><span>Alça:</span> {{ pedido.alca }}</div>
+        <div class="field"><span>Estampa:</span> {{ pedido.estampa }}</div>
+        <div class="field"><span>Medida da Alça:</span> {{ pedido.medida_alca }} cm</div>
+    </div>
+
+    <!-- Observações -->
+    <div class="order-section">
+        <div class="section-title">Observações</div>
+        <div class="field"><span>Observação:</span> {{ pedido.observacao }}</div>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="footer">
+        <p>Ordem de Produção gerada em {{ pedido.data_emissao.strftime('%d/%m/%Y') }}.</p>
+    </div>
+</div>
+
+<!-- Botão de impressão centralizado e estilizado -->
+<div class="print-button-container">
+    <button onclick="window.print()" class="print-button">Imprimir</button>
+</div>
+
+</body>
+</html>
+
+
+<script>
+
+function imprimirOP(pedidoId) {
+    // Abre a página de impressão em uma nova aba
+    window.open('/imprimir_op/' + pedidoId, '_blank');
+}
+
+</script>

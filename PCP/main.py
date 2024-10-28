@@ -436,8 +436,8 @@ def add_pedido():
 
     nome_cliente = request.form['nome_cliente']
     produto = request.form['produto']
-    data_emissao = datetime.strptime(request.form['data_emissao'], '%Y-%m-%d')
-    data_entrega = datetime.strptime(request.form['data_entrega'], '%Y-%m-%d')
+    data_emissao = datetime.strptime(request.form['data_emissao'], '%Y-%m-%d').strftime('%d/%m/%Y')
+    data_entrega= datetime.strptime(request.form['data_emissao'], '%Y-%m-%d').strftime('%d/%m/%Y')
     entregador = request.form['entregador']
     emissor_pedido = request.form['emissor_pedido']
     tamanho_altura = request.form['tamanho_altura']
@@ -869,6 +869,14 @@ def deletar_ficha(id):
     db.session.commit()
     flash('Ficha técnica deletada com sucesso!')
     return redirect(url_for('Fichas_tecnicas'))
+
+@app.route('/imprimir_op/<int:pedido_id>')
+def imprimir_op(pedido_id):
+    # Recupera os dados do pedido com base no ID
+    pedido = PedidoCliente.query.get(pedido_id)
+    
+    # Renderiza um template de impressão com os dados do pedido
+    return render_template('imprimir_op.html', pedido=pedido)
 
 
 
