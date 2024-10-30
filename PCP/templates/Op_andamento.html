@@ -234,6 +234,7 @@
                                         <th>Observação</th>
                                         <th>Status</th>
                                         <th>Ações</th>
+                                        <th>Selecionar impressão</th>
                                         <th>Imprimir</th>
                                     </tr>
                                 </thead>
@@ -253,9 +254,14 @@
                                                 <button type="submit" class="btn btn-success">Finalizar</button>
                                         </td>
                                     </form>
-                                        <td>
-                                            <button onclick="imprimirOP({{ pedido.id }})" class="btn btn-secondary">Imprimir</button>
-                                        </td>
+                                        <form id="form-selecionar-pedidos">
+                                            <td>
+                                            <input type="checkbox" name="pedido_selecionado" value="{{ pedido.id }}">
+                                            </td>
+                                            <td>
+                                            <button type="button" onclick="imprimirSelecionados()" class="btn btn-secondary">Imprimir Selecionados</button>
+                                            </td>
+                                        </form>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -312,12 +318,21 @@
 
     <script>
 
-function imprimirOP(pedidoId) {
-    // Abre a página de impressão em uma nova aba
-    window.open('/imprimir_op/' + pedidoId, '_blank');
+function imprimirSelecionados() {
+    // Obtém os IDs dos pedidos selecionados
+    const checkboxes = document.querySelectorAll('input[name="pedido_selecionado"]:checked');
+    const pedidoIds = Array.from(checkboxes).map(cb => cb.value);
+
+    if (pedidoIds.length !== 2) {
+        alert("Por favor, selecione exatamente dois pedidos para impressão.");
+        return;
+    }
+
+    // Abre a página de impressão com os dois IDs
+    window.open('/imprimir_op?pedido_ids=' + pedidoIds.join(','), '_blank');
 }
 
-</script>
+    </script>
 
 
     <!-- Bootstrap core JavaScript-->

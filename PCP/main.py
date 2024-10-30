@@ -8,6 +8,8 @@ from datetime import datetime
 import json
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_mail import Mail, Message
+from datetime import datetime
+import math
 
 app = Flask(__name__)
 app.config['MAIL_SERVER'] = 'smtp.sacacho.com.br'  # Altere para seu servidor SMTP
@@ -724,13 +726,22 @@ def Op_finalizada():
     page = request.args.get('page', 1, type=int)  # Certifique-se de obter a página da requisição
 
     # Filtrar pedidos com status 'finalizado'
+    filters = [PedidoCliente.status == 'finalizado']  # Definimos `filters` fora do `if`
+
     if search_query:
-        pedidos = PedidoCliente.query.filter(
-            PedidoCliente.status == 'finalizado',
-            PedidoCliente.nome_cliente.ilike(f'%{search_query}%')
-        ).order_by(PedidoCliente.id.desc()).paginate(page=page, per_page=10)
-    else:
-        pedidos = PedidoCliente.query.filter_by(status='finalizado').order_by(PedidoCliente.id.desc()).paginate(page=page, per_page=10)
+        # Tenta converter `search_query` para data, caso esteja no formato 'YYYY-MM-DD'
+        try:
+                search_date = datetime.strptime(search_query, '%Y-%m-%d').date()
+                filters.append(PedidoCliente.data_emissao == search_date)
+        except ValueError:
+            # Caso não seja uma data, aplica o filtro aos campos de texto
+            filters.append(
+                PedidoCliente.nome_cliente.ilike(f'%{search_query}%') |
+                PedidoCliente.produto.ilike(f'%{search_query}%') |
+                PedidoCliente.estampa.ilike(f'%{search_query}%')
+            )
+
+    pedidos = PedidoCliente.query.filter(*filters).order_by(PedidoCliente.id.desc()).paginate(page=page, per_page=10)
 
     return render_template('Op_finalizada.html', pedidos=pedidos, search_query=search_query)
 
@@ -870,13 +881,19 @@ def deletar_ficha(id):
     flash('Ficha técnica deletada com sucesso!')
     return redirect(url_for('Fichas_tecnicas'))
 
-@app.route('/imprimir_op/<int:pedido_id>')
-def imprimir_op(pedido_id):
-    # Recupera os dados do pedido com base no ID
-    pedido = PedidoCliente.query.get(pedido_id)
-    
-    # Renderiza um template de impressão com os dados do pedido
-    return render_template('imprimir_op.html', pedido=pedido)
+@app.route('/imprimir_op')
+def imprimir_op():
+    # Obtém os IDs dos pedidos da URL
+    pedido_ids = request.args.get('pedido_ids')
+    if pedido_ids:
+        pedido_ids = pedido_ids.split(',')
+        pedido_ids = [int(id) for id in pedido_ids]
+        pedidos = PedidoCliente.query.filter(PedidoCliente.id.in_(pedido_ids)).all()
+    else:
+        pedidos = []
+
+    # Renderiza o template com os dados dos pedidos
+    return render_template('imprimir_op.html', pedidos=pedidos, math=math)
 
 
 
