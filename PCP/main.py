@@ -10,6 +10,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from flask_mail import Mail, Message
 from datetime import datetime
 import math
+from sqlalchemy import or_
 
 app = Flask(__name__)
 app.config['MAIL_SERVER'] = 'smtp.sacacho.com.br'  # Altere para seu servidor SMTP
@@ -550,6 +551,49 @@ def Op_andamento():
     pedidos = PedidoCliente.query.filter_by(status='andamento').all()
     return render_template('Op_andamento.html', pedidos=pedidos)
 
+#Rota para editar pedidos
+@app.route('/editar_pedido/<int:id>', methods=['GET', 'POST'])
+def editar_pedido(id):
+    pedido = PedidoCliente.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        # Atualizar quantidade
+        nova_quantidade = request.form.get('quantidade')
+        if nova_quantidade and nova_quantidade.isdigit():
+            pedido.quantidade = int(nova_quantidade)
+        
+        # Atualizar tamanho em altura
+        novo_tamanho_altura = request.form.get('tamanho_altura')
+        if novo_tamanho_altura and novo_tamanho_altura.isdigit():
+            pedido.tamanho_altura = int(novo_tamanho_altura)
+        
+        # Atualizar tamanho em largura
+        novo_tamanho_largura = request.form.get('tamanho_largura')
+        if novo_tamanho_largura and novo_tamanho_largura.isdigit():
+            pedido.tamanho_largura = int(novo_tamanho_largura)
+        
+        # Atualizar tela e alça
+        nova_tela = request.form.get('tela')
+        nova_alca = request.form.get('alca')
+        
+        if nova_tela:
+            pedido.tela = nova_tela
+        if nova_alca:
+            pedido.alca = nova_alca
+        
+        db.session.commit()
+        flash('Pedido atualizado com sucesso!', 'success')
+        return redirect(url_for('Op_andamento'))
+    
+    return render_template('editar_pedido.html', pedido=pedido)
+@app.route('/cancelar_pedido/<int:id>', methods=['POST'])
+def cancelar_pedido(id):
+    pedido = PedidoCliente.query.get_or_404(id)
+    pedido.status = 'cancelado'  # Atualiza o status para "cancelado"
+    db.session.commit()
+    flash('Pedido cancelado com sucesso!', 'success')
+    return redirect(url_for('Op_andamento'))
+
 @app.route('/finalizar_pedido/<int:id>', methods=['POST'])
 def finalizar_pedido(id):
     print(f"Pedido ID: {id}")  # Verifica se a rota está sendo chamada
@@ -726,7 +770,7 @@ def Op_finalizada():
     page = request.args.get('page', 1, type=int)  # Certifique-se de obter a página da requisição
 
     # Filtrar pedidos com status 'finalizado'
-    filters = [PedidoCliente.status == 'finalizado']  # Definimos `filters` fora do `if`
+    filters = [or_(PedidoCliente.status == 'finalizado', PedidoCliente.status == 'cancelado')]  # Definimos `filters` fora do `if`
 
     if search_query:
         # Tenta converter `search_query` para data, caso esteja no formato 'YYYY-MM-DD'

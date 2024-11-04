@@ -295,6 +295,17 @@ button {
     margin-top: 15px; /* Adicionando espaço acima dos botões */
     margin-bottom: 15px;
 }
+.button-group {
+    display: flex;
+    gap: 10px; /* Espaçamento entre os botões */
+    margin-top: 10px; /* Espaçamento superior, se necessário */
+}
+
+.button-group .btn {
+    margin: 0; /* Remove qualquer margem adicional */
+    align-items: center; /* Alinha verticalmente */
+}
+
 
 button:focus:not(:focus-visible) {
     outline: 0
@@ -2796,7 +2807,7 @@ fieldset:disabled a.btn {
 .btn-secondary {
     color: #fff;
     background-color: #858796;
-    border-color: #858796
+    border-color: #858796;
 }
 
 .btn-secondary:hover {

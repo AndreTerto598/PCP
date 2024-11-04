@@ -249,9 +249,20 @@
                                         <td>{{pedido.observacao}}</td>
                                         <td>{{ pedido.status }}</td>
                                         <td>
-                                            <form action="{{ url_for('finalizar_pedido', id=pedido.id) }}" method="POST"
-                                                style="display:inline;">
-                                                <button type="submit" class="btn btn-success">Finalizar</button>
+                                            <div class="button-group">
+                                                <!-- Botão de finalizar -->
+                                                <form action="{{ url_for('finalizar_pedido', id=pedido.id) }}" method="POST" style="display:inline;">
+                                                    <button type="submit" class="btn btn-success">Finalizar</button>
+                                                </form>
+                                        
+                                                <!-- Botão de editar -->
+                                                <a href="{{ url_for('editar_pedido', id=pedido.id) }}" class="btn btn-warning">Editar</a>
+                                        
+                                                <!-- Botão de cancelar -->
+                                                <form action="{{ url_for('cancelar_pedido', id=pedido.id) }}" method="POST" style="display:inline;">
+                                                    <button type="submit" class="btn btn-danger">Cancelar</button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </form>
                                         <form id="form-selecionar-pedidos">
