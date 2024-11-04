@@ -20,6 +20,7 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ url_for('static', filename= 'css/sb-admin-2.min.css') }}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
@@ -126,8 +127,8 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    
-                    
+
+
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -157,19 +158,21 @@
                         </li>
 
                         <!-- Nav Item - Alerts -->
-                            <li class="nav-item dropdown no-arrow mx-1">
-                                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-bell fa-fw"></i>
-                                    <!-- Counter - Alerts -->
-                                    <span class="badge badge-danger badge-counter">0</span>
-                                </a>
-                                <!-- Dropdown - Alerts -->
-                                    <div id="alert-container" class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"aria-labelledby="alertsDropdown">
-                                        <h6 class="dropdown-header">Alerts Center</h6>
-                                            <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-                                    </div>
-                            </li>
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw"></i>
+                                <!-- Counter - Alerts -->
+                                <span class="badge badge-danger badge-counter">0</span>
+                            </a>
+                            <!-- Dropdown - Alerts -->
+                            <div id="alert-container"
+                                class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">Alerts Center</h6>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            </div>
+                        </li>
 
                         <!-- Nav Item - Messages -->
                         <li class="nav-item dropdown no-arrow mx-1">
@@ -226,36 +229,53 @@
                     <!-- Content Row -->
                     <div class="row">
 
-                        <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
                             <div class="card border-left-primary shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Total (Mensal)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                                Quantidade Total de Sacos</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_sacos }}</div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                            <i class="fas fa-box fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
                             <div class="card border-left-success shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Total (Anual)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                                Quantidade Total de Sacolas</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_sacolas }}
+                                            </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                            <i class="fas fa-shopping-bag fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Quantidade Total de Big Bags</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_bigbags }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-suitcase fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -319,7 +339,7 @@
 
                     <div class="row">
 
-                        
+
 
                         <!-- Pie Chart -->
                         <div class="col-xl-4 col-lg-5">
@@ -347,90 +367,162 @@
                             </div>
                         </div>
                     </div>
-                    
-                        <!-- /.container-fluid -->
+                    <div class="col-lg-12 mb-4">
+                        <h3 class="text-center">Quantidade de Pedidos por Mês</h3>
+                        <canvas id="lineChart" width="400" height="200"></canvas>
 
-                        <!-- Footer -->
-                        <footer class="sticky-footer bg-white">
-                            <div class="container my-auto">
-                                <div class="copyright text-center my-auto">
-                                    <span>Copyright &copy; Desenvolvido por André Terto</span>
-                                </div>
+                    </div>
+
+                    <!-- /.container-fluid -->
+
+                    <!-- Footer -->
+                    <footer class="sticky-footer bg-white">
+                        <div class="container my-auto">
+                            <div class="copyright text-center my-auto">
+                                <span>Copyright &copy; Desenvolvido por André Terto</span>
                             </div>
-                        </footer>
-                        <!-- End of Footer -->
+                        </div>
+                    </footer>
+                    <!-- End of Footer -->
 
-                        <!-- Scroll to Top Button-->
-                        <a class="scroll-to-top rounded" href="#page-top">
-                            <i class="fas fa-angle-up"></i>
-                        </a>
+                    <!-- Scroll to Top Button-->
+                    <a class="scroll-to-top rounded" href="#page-top">
+                        <i class="fas fa-angle-up"></i>
+                    </a>
 
-                        <!-- Logout Modal-->
-                        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
-                            aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Deseja realmente sair?</h5>
-                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">×</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">Aperte em "Sair" para encerrar a sessão.</div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-secondary" type="button"
-                                            data-dismiss="modal">Cancelar</button>
-                                        <a class="btn btn-primary" href="{{ url_for('logout') }}">Sair</a>
-                                    </div>
+                    <!-- Logout Modal-->
+                    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Deseja realmente sair?</h5>
+                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">Aperte em "Sair" para encerrar a sessão.</div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" type="button"
+                                        data-dismiss="modal">Cancelar</button>
+                                    <a class="btn btn-primary" href="{{ url_for('logout') }}">Sair</a>
                                 </div>
                             </div>
                         </div>
-                        
+                    </div>
 
-                        <!-- Bootstrap core JavaScript-->
-                        <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
-                        <script
-                            src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-                        <!-- Core plugin JavaScript-->
-                        <script
-                            src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+                    <!-- Bootstrap core JavaScript-->
+                    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+                    <script
+                        src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-                        <!-- Page level plugins -->
-                        <script src="{{ url_for('static', filename='vendor/chart.js/Chart.min.js') }}"></script>
+                    <!-- Core plugin JavaScript-->
+                    <script
+                        src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
-                        <!-- Custom scripts for all pages-->
-                        <script src="{{ url_for('static', filename='js/sb-admin-2.min.js') }}"></script>
+                    <!-- Page level plugins -->
+                    <script src="{{ url_for('static', filename='vendor/chart.js/Chart.min.js') }}"></script>
 
-                        <!-- Definição das Variáveis -->
-                        <script>
-                            /* eslint-disable */
-                            var total_pedidos = {{ total_pedidos | tojson }};
-                            var pedidos_em_andamento = {{ pedidos_em_andamento | tojson }};
-                            var pedidos_finalizados = {{ pedidos_finalizados | tojson }};
-                            console.log(total_pedidos, pedidos_em_andamento, pedidos_finalizados);
-                            /* eslint-enable */
-                        </script>
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+                    <!-- Custom scripts for all pages-->
+                    <script src="{{ url_for('static', filename='js/sb-admin-2.min.js') }}"></script>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                                let sacosData = [0, 0, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0]; // Exemplo de dados
+                                let sacolasData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 23850, 7200, 0]; // Exemplo de dados
+                                let bigBagsData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 8509, 30, 0]; // Exemplo de dados
 
-                       
+                                var ctx = document.getElementById('lineChart').getContext('2d');
+                                var lineChart = new Chart(ctx, {
+                                    type: 'line',
+                                    data: {
+                                        labels: ['Mês 1', 'Mês 2', 'Mês 3', 'Mês 4', 'Mês 5', 'Mês 6', 'Mês 7', 'Mês 8', 'Mês 9', 'Mês 10', 'Mês 11', 'Mês 12'],
+                                        datasets: [{
+                                            label: 'Sacos',
+                                            data: sacosData,
+                                            borderColor: 'rgba(75, 192, 192, 1)',
+                                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                            fill: true,
+                                        }, {
+                                            label: 'Sacolas',
+                                            data: sacolasData,
+                                            borderColor: 'rgba(153, 102, 255, 1)',
+                                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                                            fill: true,
+                                        }, {
+                                            label: 'Big Bags',
+                                            data: bigBagsData,
+                                            borderColor: 'rgba(255, 159, 64, 1)',
+                                            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                                            fill: true,
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true,
+                                                title: {
+                                                    display: true,
+                                                    text: 'Quantidade'
+                                                }
+                                            },
+                                            x: {
+                                                title: {
+                                                    display: true,
+                                                    text: 'Meses'
+                                                }
+                                            }
+                                        },
+                                        plugins: {
+                                            legend: {
+                                                display: true,
+                                                position: 'top',
+                                            },
+                                            tooltip: {
+                                                mode: 'index',
+                                                intersect: false,
+                                            }
+                                        },
+                                    }
+                                });
+                            });
 
-                        <script>
-                            // Conectar ao servidor WebSocket
-                            var socket = io();
-                            const socket = io();
-                        
-                            // Escutar o evento 'new_order'
-                            socket.on('new_order', function(data) {
-                                // Incrementar o número de alertas no badge
-                                var alertBadge = document.querySelector('.badge-counter');
-                                alertBadge.textContent = parseInt(alertBadge.textContent || '0') + 1;
-                        
-                                // Adicionar o novo alerta ao dropdown
-                                var alertContainer = document.getElementById('alert-container');
-                                var newAlert = document.createElement('a');
-                                newAlert.classList.add('dropdown-item', 'd-flex', 'align-items-center');
-                                newAlert.innerHTML = `
+                    </script>
+
+
+                    <!-- Definição das Variáveis -->
+                    <script>
+                        /* eslint-disable */
+                        var total_pedidos = {{ total_pedidos | tojson }};
+                        var pedidos_em_andamento = {{ pedidos_em_andamento | tojson }};
+                        var pedidos_finalizados = {{ pedidos_finalizados | tojson }};
+                        console.log(total_pedidos, pedidos_em_andamento, pedidos_finalizados);
+                        console.log('Sacos Data:', {{ sacos_data | default([]) | tojson }});
+                        console.log('Sacolas Data:', {{ sacolas_data | default([]) | tojson }});
+                        console.log('Big Bags Data:', {{ bigbags_data | default([]) | tojson }});
+                        /* eslint-enable */
+                    </script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+
+
+
+                    <script>
+                        // Conectar ao servidor WebSocket
+                        var socket = io();
+                        const socket = io();
+
+                        // Escutar o evento 'new_order'
+                        socket.on('new_order', function (data) {
+                            // Incrementar o número de alertas no badge
+                            var alertBadge = document.querySelector('.badge-counter');
+                            alertBadge.textContent = parseInt(alertBadge.textContent || '0') + 1;
+
+                            // Adicionar o novo alerta ao dropdown
+                            var alertContainer = document.getElementById('alert-container');
+                            var newAlert = document.createElement('a');
+                            newAlert.classList.add('dropdown-item', 'd-flex', 'align-items-center');
+                            newAlert.innerHTML = `
                                     <div class="mr-3">
                                         <div class="icon-circle bg-primary">
                                             <i class="fas fa-file-alt text-white"></i>
@@ -441,47 +533,47 @@
                                         <span class="font-weight-bold">${data.message}</span>
                                     </div>
                                 `;
-                                alertContainer.insertBefore(newAlert, alertContainer.firstChild);
-                            });
-                        </script>
+                            alertContainer.insertBefore(newAlert, alertContainer.firstChild);
+                        });
+                    </script>
 
-                        <!-- Código JavaScript para criar o gráfico -->
-                        <script>
-                            // Código do gráfico
-                            Chart.defaults.global.defaultFontFamily = 'Nunito, -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
-                            Chart.defaults.global.defaultFontColor = '#858796';
+                    <!-- Código JavaScript para criar o gráfico -->
+                    <script>
+                        // Código do gráfico
+                        Chart.defaults.global.defaultFontFamily = 'Nunito, -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+                        Chart.defaults.global.defaultFontColor = '#858796';
 
-                            var ctx = document.getElementById("myPieChart");
-                            var myPieChart = new Chart(ctx, {
-                                type: 'doughnut',
-                                data: {
-                                    labels: ["Total de Pedidos", "Pedidos em Andamento", "Pedidos Finalizados"],
-                                    datasets: [{
-                                        data: [total_pedidos, pedidos_em_andamento, pedidos_finalizados],
-                                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-                                        hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
-                                        hoverBorderColor: "rgba(234, 236, 244, 1)",
-                                    }],
+                        var ctx = document.getElementById("myPieChart");
+                        var myPieChart = new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: ["Total de Pedidos", "Pedidos em Andamento", "Pedidos Finalizados"],
+                                datasets: [{
+                                    data: [total_pedidos, pedidos_em_andamento, pedidos_finalizados],
+                                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+                                    hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+                                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                                }],
+                            },
+                            options: {
+                                maintainAspectRatio: false,
+                                tooltips: {
+                                    backgroundColor: "rgb(255,255,255)",
+                                    bodyFontColor: "#858796",
+                                    borderColor: '#dddfeb',
+                                    borderWidth: 1,
+                                    xPadding: 15,
+                                    yPadding: 15,
+                                    displayColors: false,
+                                    caretPadding: 10,
                                 },
-                                options: {
-                                    maintainAspectRatio: false,
-                                    tooltips: {
-                                        backgroundColor: "rgb(255,255,255)",
-                                        bodyFontColor: "#858796",
-                                        borderColor: '#dddfeb',
-                                        borderWidth: 1,
-                                        xPadding: 15,
-                                        yPadding: 15,
-                                        displayColors: false,
-                                        caretPadding: 10,
-                                    },
-                                    legend: {
-                                        display: false
-                                    },
-                                    cutoutPercentage: 80,
+                                legend: {
+                                    display: false
                                 },
-                            });
-                        </script>
+                                cutoutPercentage: 80,
+                            },
+                        });
+                    </script>
 
 </body>
 

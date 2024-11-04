@@ -11,6 +11,7 @@ from flask_mail import Mail, Message
 from datetime import datetime
 import math
 from sqlalchemy import or_
+from sqlalchemy import extract
 
 app = Flask(__name__)
 app.config['MAIL_SERVER'] = 'smtp.sacacho.com.br'  # Altere para seu servidor SMTP
@@ -190,14 +191,37 @@ def processar_login():
 @app.route('/principal', methods=['GET', 'POST'])
 @login_required
 def principal():
+    total_sacos = db.session.query(db.func.sum(PedidoCliente.quantidade)).filter_by(tipo_produto='saco').scalar() or 0
+    total_sacolas = db.session.query(db.func.sum(PedidoCliente.quantidade)).filter_by(tipo_produto='sacola').scalar() or 0
+    total_bigbags = db.session.query(db.func.sum(PedidoCliente.quantidade)).filter_by(tipo_produto='big bag').scalar()or 0
     pedidos_em_andamento = PedidoCliente.query.filter_by(status='andamento').count()
     pedidos_finalizados = PedidoCliente.query.filter_by(status='finalizado').count()
     total_pedidos = pedidos_em_andamento + pedidos_finalizados
+
+    # Quantidade por mês para cada tipo de pedido
+    def get_quantidade_por_mes(tipo_produto):
+        return db.session.query(
+            extract('month', PedidoCliente.data_emissao).label('mes'),
+            db.func.sum(PedidoCliente.quantidade).label('quantidade')
+        ).filter_by(tipo_produto=tipo_produto).group_by('mes').order_by('mes').all()
+
+    sacos_por_mes = get_quantidade_por_mes('saco')
+    sacolas_por_mes = get_quantidade_por_mes('sacola')
+    bigbags_por_mes = get_quantidade_por_mes('big bag')
+
+    # Preparar dados para o gráfico
+    meses = list(range(1, 13))  # Meses de 1 a 12
+    sacos_data = [next((q for m, q in sacos_por_mes if m == mes), 0) for mes in meses]
+    sacolas_data = [next((q for m, q in sacolas_por_mes if m == mes), 0) for mes in meses]
+    bigbags_data = [next((q for m, q in bigbags_por_mes if m == mes), 0) for mes in meses]
     
     
     print(f'Total de Pedidos: {total_pedidos}, Pedidos em Andamento: {pedidos_em_andamento}, Pedidos Finalizados: {pedidos_finalizados}')
-    
-    return render_template('principal.html', 
+    print("Sacos Data:", sacos_data)
+    print("Sacolas Data:", sacolas_data)
+    print("Big Bags Data:", bigbags_data)
+    return render_template('principal.html',total_bigbags=total_bigbags,total_sacos=total_sacos, total_sacolas=total_sacolas, 
+                           sacos_data=sacos_data,sacolas_data=sacolas_data,bigbags_data=bigbags_data,
                            pedidos_em_andamento=pedidos_em_andamento, 
                            pedidos_finalizados=pedidos_finalizados, 
                            total_pedidos=total_pedidos)
