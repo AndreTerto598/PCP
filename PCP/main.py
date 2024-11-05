@@ -1,3 +1,6 @@
+
+#-------------------------------------------------------------------------------------------------
+from flask_login import logout_user
 from flask import Flask, render_template, redirect, request, url_for, session, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String, Float, update
@@ -12,7 +15,10 @@ from datetime import datetime
 import math
 from sqlalchemy import or_
 from sqlalchemy import extract
+#-------------------------------------------------------------------------------------------------
 
+
+#Config-------------------------------------------------------------------------------------------
 app = Flask(__name__)
 app.config['MAIL_SERVER'] = 'smtp.sacacho.com.br'  # Altere para seu servidor SMTP
 app.config['MAIL_PORT'] = 587  # Porta para TLS
@@ -27,12 +33,18 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+#-------------------------------------------------------------------------------------------------
+
+
 # Configurar o LoginManager
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+#-------------------------------------------------------------------------------------------------
 
+
+#Função para enviar mensagem ---------------------------------------------------------------------
 def send_notification_email(message):
     msg = Message('Notificação de Pedido',
                   sender='adm2@sacacho.com.br',
@@ -40,7 +52,10 @@ def send_notification_email(message):
     msg.body = message
     mail.send(msg)
 
-#Modelo de dados para o Cadastro
+#-------------------------------------------------------------------------------------------------
+
+
+#Modelo de dados para o Cadastro------------------------------------------------------------------
 class Usuario(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     usuario = db.Column(db.String(100), unique=True)
@@ -50,7 +65,9 @@ class Usuario(UserMixin, db.Model):
 def __repr__(self):
         return f'<Usuario {self.usuario}>'
 
-#Modelo de Dados para o estoque de Tecido
+#-------------------------------------------------------------------------------------------------
+
+#Modelo de Dados para o estoque de Tecido---------------------------------------------------------
 class Estoque_tecido(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome_tela = db.Column(db.String(100), nullable=False)
@@ -66,12 +83,16 @@ class Estoque_tecido(db.Model):
         self.unidade_medida = unidade_medida
         self.gramatura = gramatura
 
+#-------------------------------------------------------------------------------------------------
 
 
+#User ID -----------------------------------------------------------------------------------------
 @login_manager.user_loader
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
-# Função para obter a quantidade de um tecido pelo nome
+#-------------------------------------------------------------------------------------------------
+
+# Função para obter a quantidade de um tecido pelo nome-------------------------------------------
 def get_quantidade_tecido(nome_tela):
     tecido = Estoque_tecido.query.filter_by(nome_tela=nome_tela).first()
     if tecido:
@@ -80,7 +101,9 @@ def get_quantidade_tecido(nome_tela):
 
 app.jinja_env.globals['get_quantidade_tecido'] = get_quantidade_tecido
 
-#Função para obter a quantidade de alças pelo nome
+#-------------------------------------------------------------------------------------------------
+
+#Função para obter a quantidade de alças pelo nome------------------------------------------------
 def get_quantidade_alca(nome_alca):
     alca = Estoque_alca.query.filter_by(nome_alca=nome_alca).first()
     if alca:
@@ -88,7 +111,9 @@ def get_quantidade_alca(nome_alca):
     return 0 #Retorna 0 se a alça não for encontrada
 app.jinja_env.globals['get_quantidade_alca'] = get_quantidade_alca
 
-#Modelo de Dados para o estoque de Alças
+#-------------------------------------------------------------------------------------------------
+
+#Modelo de Dados para o estoque de Alças----------------------------------------------------------
 class Estoque_alca(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome_alca = db.Column(db.String(255), nullable=False)
@@ -100,7 +125,9 @@ class Estoque_alca(db.Model):
         self.quantidade_alca = quantidade_alca
         self.unidade_medida = unidade_medida
 
-# Modelo de Dados para Cadastro de Pedidos
+#-------------------------------------------------------------------------------------------------
+
+# Modelo de Dados para Cadastro de Pedidos--------------------------------------------------------
 class PedidoCliente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome_cliente = db.Column(db.String(255), nullable=False)
@@ -127,7 +154,9 @@ class PedidoCliente(db.Model):
     def __repr__(self):
         return f'<PedidoCliente {self.nome_cliente}>'
     
-    # Modelo de Dados para Ficha Técnica
+#-------------------------------------------------------------------------------------------------
+    
+# Modelo de Dados para Ficha Técnica--------------------------------------------------------------
 class FichaTecnica(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     descricao = db.Column(db.String(255), nullable=False)
@@ -136,10 +165,11 @@ class FichaTecnica(db.Model):
 
     def __repr__(self):
         return f'<FichaTecnica {self.descricao}>'
+    
+#-------------------------------------------------------------------------------------------------
 
     
-        
-
+#Rota de Cadastro --------------------------------------------------------------------------------
 @app.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
     return render_template('cadastro.html')
@@ -164,9 +194,9 @@ def processar_cadastro():
 
     return f"Usuário {usuario} cadastrado com sucesso!"
 
-#Fim da parte de Cadastro
+#-------------------------------------------------------------------------------------------------
 
-#Início da página de login
+#Rota de login -----------------------------------------------------------------------------------
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -188,6 +218,10 @@ def processar_login():
         flash('Login Inválido', 'error')
         return render_template('login.html', login_invalido=True)
     
+#-------------------------------------------------------------------------------------------------
+
+
+#Rota da Página Principal ------------------------------------------------------------------------
 @app.route('/principal', methods=['GET', 'POST'])
 @login_required
 def principal():
@@ -226,11 +260,10 @@ def principal():
                            pedidos_finalizados=pedidos_finalizados, 
                            total_pedidos=total_pedidos)
 
-#Fim da página de Login
+#-------------------------------------------------------------------------------------------------
 
-#Logout
 
-from flask_login import logout_user
+#Logout ------------------------------------------------------------------------------------------
 
 @app.route('/logout')
 @login_required
@@ -238,7 +271,9 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-#Página de Estoque de Tecidos
+#-------------------------------------------------------------------------------------------------
+
+#Página de Estoque de Tecidos --------------------------------------------------------------------
 
 # Função para formatar a quantidade
 @app.template_filter('formatar_quantidade')
@@ -258,7 +293,7 @@ def tecido():
         item_formatado = {
             'id': item.id,
             'nome_tela': item.nome_tela,
-            'quantidade_tela': item.quantidade_tela,  # Mantenha o valor original aqui
+            'quantidade_tela': item.quantidade_tela,  
             'quantidade_tela_formatada': formatar_quantidade(item.quantidade_tela),  # Exibição formatada
             'tipo_tela': item.tipo_tela,
             'unidade_medida': item.unidade_medida,
@@ -333,7 +368,10 @@ def delete_item(id):
     flash('Item removido com sucesso!')
     return redirect(url_for('tecido'))
 
-#Página de Estoque de Alças
+
+#-------------------------------------------------------------------------------------------------
+
+#Página de Estoque de Alças ----------------------------------------------------------------------
 
 @app.template_filter('formatar_quantidade_alca')
 def formatar_quantidade_alca(quantidade):
@@ -414,6 +452,11 @@ def delete_alca(id):
     
     flash('Alça removida com sucesso!')
     return redirect(url_for('alca'))
+
+#-------------------------------------------------------------------------------------------------
+
+
+#Bloco de Cadastro de OP -------------------------------------------------------------------------
 
 #Rota para pesquisar telas
 @app.route('/search_telas', methods=['GET'])
@@ -569,7 +612,10 @@ def Op_cadastro():
     print(f'Telas encontradas: {[tela.nome_tela for tela in telas]}') 
     return render_template('Op_cadastro.html', fichas_tecnicas=fichas_tecnicas, telas=telas)
 
-#Rota para exibir os pedidos em andamento
+
+#-------------------------------------------------------------------------------------------------
+
+#Rota para exibir os pedidos em andamento --------------------------------------------------------
 @app.route('/Op_andamento')
 def Op_andamento():
     pedidos = PedidoCliente.query.filter_by(status='andamento').all()
@@ -626,9 +672,7 @@ def finalizar_pedido(id):
     pedido = PedidoCliente.query.get_or_404(id)
     print(f"Pedido encontrado: {pedido}")
     print(f"Ficha ID do Pedido: {pedido.ficha_id}")  # Verificar o ficha_id do pedido
-    
 
-    
     # Verificar o tipo de produto
     tipo_produto = pedido.tipo_produto.strip().lower() if pedido.tipo_produto else None
     print(f"Tipo de produto: {tipo_produto}")
@@ -786,8 +830,10 @@ def finalizar_pedido(id):
 
     flash('Pedido finalizado com sucesso!')
     return redirect(url_for('Op_andamento'))
+#-------------------------------------------------------------------------------------------------
 
-#Rota de Pedidos Finalizados
+
+#Rota de Pedidos Finalizados ---------------------------------------------------------------------
 @app.route('/Op_finalizada', methods=['GET', 'POST'])
 def Op_finalizada():
     search_query = request.args.get('search', '')
@@ -812,6 +858,9 @@ def Op_finalizada():
     pedidos = PedidoCliente.query.filter(*filters).order_by(PedidoCliente.id.desc()).paginate(page=page, per_page=10)
 
     return render_template('Op_finalizada.html', pedidos=pedidos, search_query=search_query)
+#-------------------------------------------------------------------------------------------------
+
+#Rotas de ficha técnica --------------------------------------------------------------------------
 
 #Rota para buscar insumos
 @app.route('/buscar_insumos')
@@ -948,7 +997,11 @@ def deletar_ficha(id):
     db.session.commit()
     flash('Ficha técnica deletada com sucesso!')
     return redirect(url_for('Fichas_tecnicas'))
+#-------------------------------------------------------------------------------------------------
 
+
+
+#Rota de impressão de OP -------------------------------------------------------------------------
 @app.route('/imprimir_op')
 def imprimir_op():
     # Obtém os IDs dos pedidos da URL
@@ -963,11 +1016,7 @@ def imprimir_op():
     # Renderiza o template com os dados dos pedidos
     return render_template('imprimir_op.html', pedidos=pedidos, math=math)
 
-
-
-
-
-
+#-------------------------------------------------------------------------------------------------
 
 
 
