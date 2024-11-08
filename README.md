@@ -1,105 +1,249 @@
-
-![Banner do YouTube eSports Gamer Escuro Vermelho Preto](https://github.com/user-attachments/assets/538caa9c-ba91-47dd-818f-4364a427ba28)
-
-# PCP - SACACHO ⚙️🔨
-Desenvolvimento de um programa PCP (Programação e controle de produção) para atender as necessidades da empresa de confecção têxtil Sacacho, uma empresa voltada para o ramo de embalagens de ráfia.
-
-### Definição de requisitos e esboço📔:
-
-•Página de Login: O sistema deverá contar com uma página inicial de login, para identificação e autenticação dos usuários, já que será utilizado por diferentes setores e colaboradores.
-•	Cadastros : O sistema deverá contar com uma parte de cadastros, que serão separados inicialmente em: Cadastro de usuários, cadastro de produtos( Matéria prima e produtos acabados) e cadastro de fichas técnicas.
-
-•	Cadastro de pedidos : É necessário uma página para cadastro dos pedidos que irão para a produção, esse cadastro de pedidos deve conter: 
-
--Nome do Cliente;
--Tipo de produto(Saco, bolsa ou rolo);
--Medida em cm;
--Tipo de tecido;
--Cor e tamanho da alça;
--Estampa;
--Data de emissão e entrega;
--Identificação do entregador;
--Nome do emissor do pedido;
--Quantidade de itens e volumes;
--Campo de observação.
-
-![image](https://github.com/user-attachments/assets/e4d3da1c-b3c1-4933-ad95-fefba38affde)
-
-•	Produção – A parte de produção deverá indicar se o pedido está em produção, ou se já foi produzido, além disso é importante que seja possível fazer lançamentos parciais dos pedidos, com quantidades parciais. Nesta seção serão alocados os pedidos cadastros anteriormente no cadastro de pedidos, portanto é importante que os pedidos sejam identificados por: Número de pedido, nome do cliente e produto.
-
-•	Cálculo da matéria prima – A parte de produção deverá calcular o total de tecido gasto em KG e de alças gastas em metros. Para o cálculo dos tecidos devemos considerar as seguintes informações:
-
-O cálculo para telas planas e telas tubulares é diferente, além disso deve-se considerar que para o cálculo das bolsas, acrescenta-se + 5 cm na altura da bolsa, enquanto que no cálculo do saco acrescenta-se + 3 cm na altura do saco.
-
--Telas Planas: Para os materiais cortados em telas planas, o cálculo é feito da seguinte maneira: Largura da tela em metros (EX: 93 plano é 0,93.) * corte em metros (Lembrar de considerar o acréscimo de bolsas e sacos) * Quantidade * gramatura da tela em KG (se for 65g ficará 0,065)
-
--Telas Tubulares: Para os materiais cortados em telas tubulares o cálculo é o mesmo, porém multiplica a largura da tela por 2, ou seja: Caso a tela seja de 50 cm laminada, a largura da tela no cálculo entrara como 1 m e não 0,50m.
-
-Quais são as telas planas? As telas planas são: 
-
-100 PLANO;
-115 HB MARROM;
-115 HB BRANCA;
-60 HB BRANCA;
-60 HB CINZA;
-60 HBX;
-60 PL CAST;
-93 PLANO;
-95 PLANO UV;
-70 PL PLANO;
+<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+<a id="readme-top"></a>
 
 
-E quais são as telas tubulares? As telas tubulares são:
 
-45 PL;		60 PL;			90 PL;
-50 SL;		60 PL MARROM;
-50 AM;	  60 SL;
-50 PL;		60 AM;
-50 VD;		60 VD;
-55 PL;		65 PL;
-65 SL;		70 PL;
-75 PL;		80 PL;
+<!-- PROJECT SHIELDS -->
 
-•	Quais são as gramaturas das telas?
+[![Contributors][contributors-shield]][contributors-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-115 HB BRANCA -	90g
-115 HB MARROM	- 90g
-45 PL -	65g
-45 SL -	58g
-50 AM -	70g
-50 HB CINZA -	110g
-50 PL -	67g
-50 PL CAST - 84g
-50 VD -	70g
-52 HB BRANCO -	120g
-55 PL -	65g
-60 HB BRANCA -	120g
-60 HB CINZA -	120g
-60 HBX -	79g
-60 PL -	65g
-60 PL CAST -	84g
-60 PL MARROM -	60g
-60 SL -	58g
-60 VD -	70g
-65 PL -	65g
-65 SL -	60g
-70 PL -	65g
-75 PL -	65g
-80 PL -	65g
-93 PLANO -	65g
-70 PL PLANO -	65g
-95 PLANO UV -	65g
-120 HB PL -	90g
-60 AM -	70g
-70 HB BRANCA -	120g
-100 PLANO -	65g
-90 PL -	65g
 
-• Cálculo de alças :  O cálculo de alças é Quantidade de bolsas * 2 * tamanho da alça em metro.
-### Estoque 
-Necessita-se de uma visualização do estoque, em tempo real, conforme os gastos de matéria prima dos pedidos. Se possível com uma visualização diferente para quando a quantidade entrar em nível crítico.
-![image](https://github.com/user-attachments/assets/d342f877-fd04-433f-8903-abed920bb3b5)
 
-### Linguagens Utilizadas 💻:
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/AndreTerto598/PCP">
+    <img src="images/logo.jpg" alt="Logo" width="200" height="200">
+  </a>
 
-Django como o framework web, SQLAlchemy para interagir com o banco de dados, e HTML/CSS/JavaScript para o frontend. Postgre pra banco de dados.
+  <h3 align="center">PCP Sacacho</h3>
+
+  <p align="center">
+    Projeto de aplicativo Web para Planejamento e controle de Produção.
+    <br />
+    <a href="https://github.com/AndreTerto598/PCP"><strong>Veja a documentação. »</strong></a>
+    <br />
+    <br />
+    ·
+    <a href="https://github.com/AndreTerto598/PCP/issues/new?labels=bug&template=bug-report---.md">Reporte um Bug</a>
+    ·
+    <a href="https://github.com/AndreTerto598/PCP/issues/new?labels=enhancement&template=feature-request---.md">Sugira melhorias</a>
+  </p>
+</div>
+
+
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Índice</summary>
+  <ol>
+    <li>
+      <a href="#sobre-o-projeto">Sobre o Projeto</a>
+      <ul>
+        <li><a href="#linguagens-utilizadas">Linguagens utilizadas</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#comece-por-aqui">Comece por aqui.</a>
+      <ul>
+        <li><a href="#pré-requisitos">Pré-Requisitos</a></li>
+        <li><a href="#instalação">Instalação</a></li>
+      </ul>
+    </li>
+    <li><a href="#casos-de-uso">Casos de uso</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#licença">Licença</a></li>
+    <li><a href="#contato">Contato</a></li>
+  </ol>
+</details>
+
+
+
+<!-- Sobre o Projeto -->
+## Sobre o Projeto
+
+![Principal](https://github.com/user-attachments/assets/3eda4d17-5fc3-4603-9ddb-8422f691dab8)
+
+
+Com a emergente necessidade de automatizar o setor de produção da empresa e dificuldades em achar um software PCP para confecção têxtil que nos atendesse, resolvi criar um software PcP personalizado que atenda as necessidades da empresa.
+
+O que ele engloba:
+* Cadastro de usuários e autenticação.
+* Estoque funcional de matéria prima.
+* Criação, produção e finalização de pedidos.
+* Planejamento de Entregas
+
+O Objetivo do projeto é minimizar a quantidade de erros humanos no processo de produção, automatizando ao máximo os setores e funções. O projeto conta com um processo de produção em 3 etapas simples, e que, ao ser finalizado, automaticamente realiza o desconto dos insumos do estoque, fornecendo ao usuário uma visualização em tempo real do seu estoque.
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+### Linguagens utilizadas
+
+Lista de linguagens utilizadas no projeto:
+
+* ![JavaScript][JavaScript]
+* ![Python][Python]
+* ![Flask][Flask]
+* ![Jinja][Jinja]
+* ![HTML5][HTML5
+* ![CSS3][CSS3]
+* ![Bootstrap.com][Bootstrap.com]
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- GETTING STARTED -->
+## Comece por aqui
+
+Este é um projeto personalizado para a empresa Sacacho. Para adquirir um Projeto personalizado para sua empresa, entre em contato por um dos canais de contato.
+
+### Pré Requisitos
+
+O projeto é bem leve e roda em seu navegador.
+
+### Instalação
+
+
+1. Entre em contato para adquirir uma licença através dos canais de contato 
+2. Baixe o repositório zipado ou Clone.
+   ```sh
+   git clone https://github.com/AndreTerto598/PCP.git
+   ```
+3. Faça as modificações necessárias, Conforme sua infraestrutura.
+   
+
+<!-- Casos de uso -->
+## Casos de Uso
+
+Use esta seção para aprender sobre a utilização do aplicativo e como ele funciona.
+
+### Cadastro
+
+O projeto conta com uma página de cadastro para novos usuários, simples e funcional, basta apenas preencher com os dados requisitados.
+
+<img src="images/Cadastro.jpg">
+
+### Login
+
+Após realizar seu cadastro, o usuário deverá fazer login com as credenciais cadastradas.
+
+<img src="images/Login.jpg">
+
+### Página Principal
+
+A primeira parte da página principal contém as informações dos produtos fabricados, pedidos em andamento e a barra lateral de navegação para outras sessões.
+
+<img src="images/Principal.jpg">
+
+Logo abaixo tem um gráfico interativo com as produções mensais de cada categoria de produto.
+
+<img src="images/Principal2.jpg">
+
+### Estoque de Tecido
+
+Na página de estoque de tecido é possível cadastrar,editar e remover os tecidos e insumos que serão utilizados nas ordens de produção. É importante que o cadastro seja feito corretamente para que o sistema possa calcular o gasto destes insumos.
+
+<img src="images/Estoque-tecido.jpg">
+
+### Estoque de Alças
+
+Na página de estoque de Alças é possível cadastrar,editar e remover as Alças e insumos que serão utilizados nas ordens de produção. É importante que o cadastro seja feito corretamente para que o sistema possa calcular o gasto destes insumos.
+
+<img src="images/Estoque-Alças.jpg">
+
+### Cadastro de Ordem de Produção
+
+A página de cadastro de produção é simples e intuitiva. O usuário deve apenas cadastrar a OP com as informações corretas e necessárias para a produção.
+
+<img src="images/NovaOp.jpg" >
+
+
+
+
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- ROADMAP -->
+## Roadmap
+
+- [x] Cadastro de Usuários
+- [X] Login e autenticação
+- [X] Estoques
+- [X] Ordens de Produção
+- [X] Dashboard
+- [ ] Entrega
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- CONTRIBUTING -->
+## Contribuição
+
+Caso deseje contribuir com este jovem analista e programador, você pode me seguir nas redes sociais e compartilhar meu projeto com outras pessoas.Os links das redes sociais e contatos estão abaixo.
+
+
+### Autor:
+
+<a href="https://github.com/AndreTerto598/PCP/graphs/contributors">
+  <img src="images/Perfil2.jpg" alt="contrib.rocks image" width="200" height="200" /> 
+
+  Sou um jovem de 21 anos apaixonado por tecnologia. Atualmente curso CiberSegurança, mas tenho formação técnica em Desenvolvimento de Sistemas e qualificações em Oracle Banco de dados, entre outras áreas. Altamente Entusiasmado com novos projetos e desafios, gosto de ir além, e penso sempre no que posso agregar e melhorar para o ambiente que estou inserido.Este projeto é uma prova disso e um passo inicial na minha carreira Como Desenvolvedor e Analista.
+</a>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- LICENÇA -->
+## Licença
+
+Para Utilização do Projeto, por favor entre em contato comigo por algum dos canais de contato.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- Contato -->
+## Contato
+
+André Terto - Instagram:(@andre_alft2) - E-mail: tertocomercial@gmail.com - Linkedin: https://www.linkedin.com/in/andreterto/
+
+Link do Projeto: https://github.com/AndreTerto598/PCP
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/AndreTerto598/PCP.svg?style=for-the-badge
+[contributors-url]: https://github.com/AndreTerto598/PCP/graphs/contributors
+[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
+[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
+[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
+[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://www.linkedin.com/in/andreterto/
+[product-screenshot]: images/screenshot.png
+[JavaScript]:https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E
+[Python]: https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
+[HTML5]:https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white
+[CSS3]:https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white
+[Flask]:https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white
+[Jinja]:https://img.shields.io/badge/jinja-white.svg?style=for-the-badge&logo=jinja&logoColor=black
+[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
+[Bootstrap-url]: https://getbootstrap.com
+[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
+[JQuery-url]: https://jquery.com 
