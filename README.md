@@ -89,7 +89,7 @@ Lista de linguagens utilizadas no projeto:
 * ![Python][Python]
 * ![Flask][Flask]
 * ![Jinja][Jinja]
-* ![HTML5][HTML5
+* ![HTML5][HTML5]
 * ![CSS3][CSS3]
 * ![Bootstrap.com][Bootstrap.com]
 
