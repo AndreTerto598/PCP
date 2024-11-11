@@ -20,14 +20,14 @@ from sqlalchemy import extract
 
 #Config-------------------------------------------------------------------------------------------
 app = Flask(__name__)
-app.config['MAIL_SERVER'] = 'smtp.sacacho.com.br'  # Altere para seu servidor SMTP
+app.config['MAIL_SERVER'] = 'smtp'  # Altere para seu servidor SMTP
 app.config['MAIL_PORT'] = 587  # Porta para TLS
-app.config['MAIL_USERNAME'] = 'adm2@sacacho.com.br'
-app.config['MAIL_PASSWORD'] = 'Sacacho@947'
+app.config['MAIL_USERNAME'] = 'E-mail'
+app.config['MAIL_PASSWORD'] = 'Senha do E-mail'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
-app.config['SECRET_KEY'] = 'TERTOPCP'
+app.config['SECRET_KEY'] = ''
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg://postgres:123@localhost/PCP'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -47,8 +47,8 @@ login_manager.login_view = 'login'
 #Função para enviar mensagem ---------------------------------------------------------------------
 def send_notification_email(message):
     msg = Message('Notificação de Pedido',
-                  sender='adm2@sacacho.com.br',
-                  recipients=['adm2@sacacho.com.br'])
+                  sender='Remetente do E-mail',
+                  recipients=['Destinatários do E-mail'])
     msg.body = message
     mail.send(msg)
 
@@ -1025,4 +1025,4 @@ def imprimir_op():
 
 
 if __name__ == '__main__':
-    app.run(host='192.168.1.13', port=5000)
+    app.run(host='Endereço IP', port=5000)
