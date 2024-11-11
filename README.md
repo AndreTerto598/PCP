@@ -158,14 +158,23 @@ Na página de estoque de Alças é possível cadastrar,editar e remover as Alça
 
 ### Cadastro de Ordem de Produção
 
-A página de cadastro de produção é simples e intuitiva. O usuário deve apenas cadastrar a OP com as informações corretas e necessárias para a produção.
+A página de cadastro de produção é simples e intuitiva. O usuário deve apenas cadastrar a OP com as informações corretas e necessárias para a produção.Ao cadastrar um novo pedido, chegará uma mensagem de notificação por e-mail para o setor de expedição.
 
 <img src="images/NovaOp.jpg" >
 
 
+### Op´s em andamento
+
+A página de Op´s em andamento retorna para o usuário uma visualização limpa com todas as informações necessárias para localizar o pedido, além disso, também conta com os botões de "Cancelar" caso o pedido necessite ser cancelado, "Editar", caso haja mudança no pedido e "Finalizar", Para atualizar o status do pedido. O Botão de finalizar, quando acionado, é o responsável pela lógica de descontos dos insumos.
+
+<img src="images/Op-Andamento.jpg" >
 
 
+### Op´s Finalizadas
 
+A página de Op´s Finalizadas, retorna todas as Op´s finalizadas anteriormente, em ordem decrescente, da mais recente a mais antiga, além disso, há um campo de busca, para facilitar a pesquisa por Op´s específicas.
+
+<img src="images/Op-Finalizada.jpg" >
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
