@@ -188,7 +188,7 @@ A página de Op´s Finalizadas, retorna todas as Op´s finalizadas anteriormente
 - [X] Estoques
 - [X] Ordens de Produção
 - [X] Dashboard
-- [ ] Entrega
+- [X] Entrega
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
