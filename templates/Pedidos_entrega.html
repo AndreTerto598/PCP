@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Pedidos em andamento</title>
+    <title>Pedidos A serem Entregues</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ url_for('static', filename='vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet"
@@ -109,7 +109,7 @@
                             <h6 class="collapse-header">PCP-Entregas</h6>
                             <a class="collapse-item" href="{{ url_for ('Pedidos_entrega') }}">Pedidos a serem
                                 entregues</a>
-                            <a class="collapse-item" href="Rotas_entrega.html">Rotas de entrega</a>
+                            <a class="collapse-item" href="{{ url_for ('rotas_entrega') }}">Rotas de entrega</a>
                         </div>
                     </div>
                 </li>
@@ -231,7 +231,6 @@
                                 <th>Produto</th>
                                 <th>Quantidade</th>
                                 <th>Data de Entrega</th>
-                                <th>Emissor</th>
                                 <th>Entregador</th>
                                 <th>Rota</th>
                                 <th>Ações</th>
@@ -245,38 +244,49 @@
                                 <td>{{ pedido.produto }}</td>
                                 <td>{{ pedido.quantidade }}</td>
                                 <td>{{ pedido.data_entrega }}</td>
-                                <td>{{ pedido.emissor }}</td>
                                 <td>{{ pedido.entregador }}</td>
                                 <td>
-                                    <form method="POST" action="{{ url_for('atualizar_rota', id=pedido.id) }}">
+                                    <form method="POST" action="{{ url_for('atualizar_rota', pedido_id=pedido.id) }}">
                                         <select name="rota" class="form-control">
                                             <option value="" disabled selected>Selecionar rota</option>
-                                            <option value="Dutra">Dutra</option>
-                                            <option value="Niterói">Niterói</option>
-                                            <option value="Avenida Brasil Centro">Avenida Brasil Centro</option>
-                                            <option value="Avenida Brasil Santa Cruz">Avenida Brasil Santa Cruz</option>
-                                            <option value="Jacarepaguá">Jacarepaguá</option>
-                                            <option value="Duque de Caxias">Duque de Caxias</option>
-                                            <option value="Zona Sul">Zona Sul</option>
-                                            <option value="Zona Norte">Zona Norte</option>
-                                            <option value="SP">SP</option>
-                                            <option value="MG">MG</option>
-                                            <option value="ES">ES</option>
-                                            <option value="GO">GO</option>
-                                            <option value="SC">SC</option>
-                                            <option value="RS">RS</option>
-                                            <option value="DF">DF</option>
-                                            <option value="AM">AM</option>
-                                            <option value="BA">BA</option>
-                                            <option value="MS">MS</option>
-                                            <option value="PR">PR</option>
-                                            <option value="AL">AL</option>
-                                            <option value="CE">CE</option>
+                                            <option value="Dutra" {% if pedido.rota=="Dutra" %}selected{% endif %}>Dutra
+                                            </option>
+                                            <option value="Niterói" {% if pedido.rota=="Niterói" %}selected{% endif %}>
+                                                Niterói</option>
+                                            <option value="Avenida Brasil Centro" {% if
+                                                pedido.rota=="Avenida Brasil Centro" %}selected{% endif %}>
+                                                Avenida Brasil Centro</option>
+                                            <option value="Avenida Brasil Santa Cruz" {% if
+                                                pedido.rota=="Avenida Brasil Santa Cruz" %}selected{% endif %}>Avenida
+                                                Brasil Santa Cruz</option>
+                                            <option value="Jacarepaguá" {% if pedido.rota=="Jacarepaguá" %}selected{%
+                                                endif %}>Jacarepaguá</option>
+                                            <option value="Duque de Caxias" {% if pedido.rota=="Duque de Caxias"
+                                                %}selected{% endif %}>Duque de Caxias
+                                            </option>
+                                            <option value="Zona Sul" {% if pedido.rota=="Zona Sul" %}selected{% endif
+                                                %}>Zona Sul</option>
+                                            <option value="Zona Norte" {% if pedido.rota=="Zona Norte" %}selected{%
+                                                endif %}>Zona Norte</option>
+                                            <option value="SP" {% if pedido.rota=="SP" %}selected{% endif %}>SP</option>
+                                            <option value="SC" {% if pedido.rota=="SC" %}selected{% endif %}>SC</option>
+                                            <option value="RS" {% if pedido.rota=="RS" %}selected{% endif %}>RS</option>
+                                            <option value="GO" {% if pedido.rota=="GO" %}selected{% endif %}>GO</option>
+                                            <option value="DF" {% if pedido.rota=="DF" %}selected{% endif %}>DF</option>
+                                            <option value="MG" {% if pedido.rota=="MG" %}selected{% endif %}>MG</option>
+                                            <option value="AM" {% if pedido.rota=="AM" %}selected{% endif %}>AM</option>
+                                            <option value="BA" {% if pedido.rota=="BA" %}selected{% endif %}>BA</option>
+                                            <option value="CE" {% if pedido.rota=="CE" %}selected{% endif %}>CE</option>
+                                            <option value="PR" {% if pedido.rota=="PR" %}selected{% endif %}>PR</option>
+                                            <option value="MS" {% if pedido.rota=="MS" %}selected{% endif %}>MS</option>
+                                            <option value="AL" {% if pedido.rota=="AL" %}selected{% endif %}>AL</option>
+                                            <option value="ES" {% if pedido.rota=="ES" %}selected{% endif %}>ES</option>
+                                            <option value="Cliente Coleta" {% if pedido.rota=="Cliente Coleta" %}selected{% endif %}>Cliente Coleta</option>
+                                            <!-- Adicione mais opções conforme necessário -->
                                         </select>
-                                </td>
-                                <td>
-                                    <button type="submit" class="btn btn-primary btn-sm">Atualizar</button>
+                                        <button type="submit" class="btn btn-primary mt-2">Atualizar</button>
                                     </form>
+                                </td>
                                 </td>
                             </tr>
                             {% else %}

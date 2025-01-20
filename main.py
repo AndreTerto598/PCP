@@ -27,7 +27,7 @@ app.config['MAIL_PASSWORD'] = 'Sacacho@947'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
-app.config['SECRET_KEY'] = 'TERTOPCP'
+app.config['SECRET_KEY'] = 'TERTO'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg://postgres:123@localhost/PCP'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -509,7 +509,7 @@ def add_pedido():
     nome_cliente = request.form['nome_cliente']
     produto = request.form['produto']
     data_emissao = datetime.strptime(request.form['data_emissao'], '%Y-%m-%d').strftime('%d/%m/%Y')
-    data_entrega= datetime.strptime(request.form['data_emissao'], '%Y-%m-%d').strftime('%d/%m/%Y')
+    data_entrega= datetime.strptime(request.form['data_entrega'], '%Y-%m-%d').strftime('%d/%m/%Y')
     entregador = request.form['entregador']
     emissor_pedido = request.form['emissor_pedido']
     tamanho_altura = request.form['tamanho_altura']
@@ -517,7 +517,7 @@ def add_pedido():
 
     # Convertendo a medida da alça de vírgula para ponto, se necessário
     medida_alca = request.form['medida_alca'].replace(',', '.')  # Substitui a vírgula por ponto
-    medida_alca = float(medida_alca) if medida_alca else None  # Converte para float
+    medida_alca = float(medida_alca) if medida_alca else 0  # Converte para float
 
     estampa = request.form['estampa']
     quantidade = request.form['quantidade']
@@ -1045,7 +1045,7 @@ def Pedidos_entrega():
 
     rotas = ["Dutra", "Niterói", "Avenida Brasil Centro", "Avenida Brasil Santa Cruz", "Jacarepaguá", 
              "Duque de Caxias", "Zona Sul", "Zona Norte", "SP", "MG", "ES", "GO", "SC", "RS", "DF", 
-             "AM", "BA", "MS", "PR", "AL", "CE"]
+             "AM", "BA", "MS", "PR", "AL", "CE", "Cliente Coleta"]
 
     return render_template('Pedidos_entrega.html', pedidos=pedidos_formatados, rotas=rotas)
 
@@ -1057,13 +1057,43 @@ def atualizar_rota(pedido_id):
 
     if nova_rota:
         pedido.rota = nova_rota
+        pedido.status = "Rota Definida"
         db.session.commit()
-        flash('Rota atualizada com sucesso!')
+        flash('Rota atualizada com sucesso!', 'success')
     else:
-        flash('Selecione uma rota válida.')
+        flash('Selecione uma rota válida.', 'warning')
 
     return redirect(url_for('Pedidos_entrega'))
 
+
+# Rota para a página "Rotas de Entrega"
+@app.route('/rotas_entrega')
+def rotas_entrega():
+    # Buscar todos os pedidos com status "Rota Definida"
+    pedidos = PedidoCliente.query.filter_by(status="Rota Definida").all()
+
+    # Agrupar os pedidos por rota
+    pedidos_por_rota = {}
+    for pedido in pedidos:
+        if pedido.rota not in pedidos_por_rota:
+            pedidos_por_rota[pedido.rota] = []
+        pedidos_por_rota[pedido.rota].append(pedido)
+
+    # Dados para renderizar na página
+    return render_template('Rotas_entrega.html', pedidos_por_rota=pedidos_por_rota)
+
+
+# Rota para marcar o pedido como "Finalizado"
+@app.route('/marcar_entregue/<int:pedido_id>', methods=['POST'])
+def marcar_entregue(pedido_id):
+    pedido = PedidoCliente.query.get_or_404(pedido_id)
+
+    # Atualiza o status do pedido para "Finalizado"
+    pedido.status = "finalizado"
+    db.session.commit()
+
+    flash('Pedido marcado como entregue!', 'success')
+    return redirect(url_for('rotas_entrega'))
 
 
 

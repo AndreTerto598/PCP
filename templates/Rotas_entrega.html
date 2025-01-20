@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Rotas de Entrega</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="{{ url_for('static', filename='vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet"
+        type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="{{ url_for('static', filename= 'css/sb-admin-2.min.css') }}" rel="stylesheet">
+    <!-- Custom styles for this page -->
+    <style>
+        /* Estilos gerais para as tabelas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            text-align: left;
+            border: 2px solid #ddd;
+        }
+
+
+
+
+        /* Estilos personalizados por região */
+        .tabela-Niterói {
+            background-color: #0059ff93;
+            color: rgb(255, 255, 255);
+            /* Amarelo */
+        }
+
+        .tabela-Niterói th {
+            background-color: #0059ff93;
+            color: rgb(255, 255, 255);
+            /* Títulos em preto para contraste */
+        }
+
+        .tabela-Jacarepaguá {
+            background-color: #239123;
+            color: rgb(255, 255, 255);
+            /* Verde */
+        }
+
+        .tabela-Jacarepaguá th {
+            background-color: #008000;
+            color: white;
+            /* Títulos em branco para contraste */
+        }
+
+        .tabela-SP {
+            background-color: #a13636;
+            color: white;
+
+        }
+
+        .tabela-SP th {
+            background-color: #9e1414;
+            color: white;
+
+        }
+
+        .tabela-Cliente_Coleta {
+            background-color: #fd9380;
+            color: white;
+            /* Tomate */
+        }
+
+        .tabela-Cliente_Coleta th {
+            background-color: #FF6347;
+            color: white;
+        }
+
+        .tabela-ES {
+            background-color: #e0de66;
+            color: white;
+            /* Tomate */
+        }
+
+        .tabela-ES th {
+            background-color: #dad740;
+            color: white;
+        }
+        
+        .tabela-MG {
+            background-color: #ff891c;
+            color: white;
+            /* Tomate */
+        }
+
+        .tabela-MG th {
+            background-color: #ff7b00;
+            color: white;
+        }
+
+        .tabela-SC {
+            background-color: #4049c2;
+            color: white;
+            /* Tomate */
+        }
+
+        .tabela-SC th {
+            background-color: #1a24b8;
+            color: white;
+        }
+
+        .tabela-GO {
+            background-color: #3fd389;
+            color: white;
+            /* Tomate */
+        }
+
+        .tabela-GO th {
+            background-color: #00b45a;
+            color: white;
+        }
+
+        .tabela-DF {
+            background-color: #f3c156;
+            color: white;
+            /* Tomate */
+        }
+
+        .tabela-DF th {
+            background-color: #d1a138;
+            color: white;
+        }
+
+
+        /* Estilização dos títulos de região (Niterói, Jacarepaguá, etc) */
+        h2 {
+            font-size: 1.75rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            padding: 10px;
+            color: rgb(255, 255, 255);
+            text-align: center;
+            border: 2px solid #d4d4d4;
+            border-radius: 2px;
+        }
+
+        /* Títulos de Niterói */
+        h2.titulo-Niterói {
+            background-color: #0059ff93;
+        }
+
+        /* Títulos de Jacarepaguá */
+        h2.titulo-Jacarepaguá {
+            background-color: #239123;
+        }
+
+        /* Títulos de São Paulo */
+        h2.titulo-SP {
+            background-color: #a13636;
+        }
+
+        /* Títulos de Cliente/Coleta */
+        h2.titulo-Cliente_Coleta {
+            background-color: #fd9380;
+        }
+
+        /* Títulos de SC */
+        h2.titulo-SC {
+            background-color: #4049c2;
+        }
+
+        /* Títulos de ES */
+        h2.titulo-ES {
+            background-color: #e0de66;
+        }
+
+        /* Títulos de GO */
+        h2.titulo-GO {
+            background-color: #3fd389;
+        }
+
+        /* Títulos de DF */
+        h2.titulo-DF {
+            background-color: #f3c156;
+        }
+
+        /* Títulos de MG */
+        h2.titulo-MG  {
+            background-color: #ff891c;
+        }
+
+
+
+        /* Estilização dos botões */
+        button {
+            background-color: #4e73df;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2e59d9;
+        }
+
+        /* Botões personalizados por região */
+        .tabela-Niterói button {
+            background-color: #0059ff93;
+        }
+
+        .tabela-Niterói button:hover {
+            background-color: #2e59d9;
+        }
+
+        .tabela-Jacarepaguá button {
+            background-color: #008000;
+        }
+
+        .tabela-Jacarepaguá button:hover {
+            background-color: #006400;
+        }
+
+        .tabela-SP button {
+            background-color: #a71a1a;
+        }
+
+        .tabela-SP button:hover {
+            background-color: #9e1414;
+        }
+
+        .tabela-Cliente_Coleta button {
+            background-color: #FF6347;
+        }
+
+        .tabela-Cliente_Coleta button:hover {
+            background-color: #FF4500;
+        }
+
+         .tabela-SC button {
+            background-color: #1a24b8;
+        }
+
+        .tabela-SC button:hover {
+            background-color: #1a24b8;
+        }
+
+        .tabela-ES button {
+            background-color: #dad740;
+        }
+
+        .tabela-ES button:hover {
+            background-color: #dad740;
+        }
+
+        .tabela-GO button {
+            background-color: #00b45a;
+        }
+
+        .tabela-GO button:hover {
+            background-color: #00b45a;
+        }
+
+        .tabela-DF button {
+            background-color: #d1a138;
+        }
+
+        .tabela-DF button:hover {
+            background-color: #d1a138;
+        }
+
+        .tabela-MG button {
+            background-color: #ff7b00;
+        }
+
+        .tabela-MG button:hover {
+            background-color: #ff7b00;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <body id="page-top">
+
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+
+            <!-- Sidebar -->
+            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+                <!-- Sidebar - Brand -->
+                <a class="sidebar-brand d-flex align-items-center justify-content-center"
+                    href="{{ url_for ('principal') }}">
+                    <img src="{{ url_for('static', filename = '/image/sacola.png') }}" alt="Logo da Sacacho"
+                        height="40"><br><br>
+                    <div class="sidebar-brand-text mx-3">Sacacho</div>
+                </a>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider my-0">
+
+                <!-- Nav Item - Dashboard -->
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ url_for ('principal') }}">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>Dashboard</span></a>
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+
+                <!-- Heading -->
+                <div class="sidebar-heading">
+                    Interface
+                </div>
+
+                <!-- Nav Item Ordens de Produção -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                        aria-expanded="true" aria-controls="collapseTwo">
+                        <i class="fa fa-industry"></i>
+                        <span>Ordens de Produção</span>
+                    </a>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Ordens de produção:</h6>
+                            <a class="collapse-item" href="{{ url_for ('Op_cadastro') }}">Nova Ordem de Produção</a>
+                            <a class="collapse-item" href="{{ url_for ('Op_andamento') }}">OP's em andamento</a>
+                            <a class="collapse-item" href="{{ url_for ('Op_finalizada') }}">OP's Finalizadas</a>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- Nav Item - Estoque-->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEstoque"
+                        aria-expanded="true" aria-controls="collapseEstoque">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Estoque</span>
+                    </a>
+                    <div id="collapseEstoque" class="collapse" aria-labelledby="headingEstoque"
+                        data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Controle de Estoque:</h6>
+                            <a class="collapse-item" href="{{ url_for ('tecido') }}">Estoque de Tecido</a>
+                            <a class="collapse-item" href="{{ url_for ('alca')}}">Estoque de Alças</a>
+                            <a class="collapse-item" href="{{ url_for ('Op_finalizada') }}">OP's Finalizadas</a>
+                            <a class="collapse-item" href="{{ url_for ('Fichas_tecnicas') }}">Fichas Técnicas</a>
+                        </div>
+                    </div>
+                </li>
+
+
+                <!-- Nav Item - Entrega -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                        aria-expanded="true" aria-controls="collapseUtilities">
+                        <i class="fas fa-solid fa-truck"></i>
+                        <span>Entrega</span>
+                    </a>
+                    <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                        data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">PCP-Entregas</h6>
+                            <a class="collapse-item" href="{{ url_for ('Pedidos_entrega') }}">Pedidos a serem
+                                entregues</a>
+                            <a class="collapse-item" href="{{ url_for ('rotas_entrega') }}">Rotas de entrega</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <!-- Fim da Sidebar -->
+
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+
+                <!-- Main Content -->
+                <div id="content">
+
+                    <!-- Topbar -->
+                    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                        <!-- Sidebar Toggle (Topbar) -->
+                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                            <i class="fa fa-bars"></i>
+                        </button>
+
+
+
+                        <!-- Topbar Navbar -->
+                        <ul class="navbar-nav ml-auto">
+
+                            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                            <li class="nav-item dropdown no-arrow d-sm-none">
+                                <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-search fa-fw"></i>
+                                </a>
+                                <!-- Dropdown - Messages -->
+                                <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                    aria-labelledby="searchDropdown">
+                                    <form class="form-inline mr-auto w-100 navbar-search">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control bg-light border-0 small"
+                                                placeholder="Search for..." aria-label="Search"
+                                                aria-describedby="basic-addon2">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" type="button">
+                                                    <i class="fas fa-search fa-sm"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+
+                            <!-- Nav Item - Alerts -->
+                            <li class="nav-item dropdown no-arrow mx-1">
+                                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-bell fa-fw"></i>
+                                    <!-- Counter - Alerts -->
+                                    <span class="badge badge-danger badge-counter"></span>
+                                </a>
+                                <!-- Dropdown - Alerts -->
+                                <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                    aria-labelledby="alertsDropdown">
+                                    <h6 class="dropdown-header">
+                                        Alerts Center
+                                    </h6>
+                                    <a class="dropdown-item text-center small text-gray-500" href="#">Show All
+                                        Alerts</a>
+                                </div>
+                            </li>
+
+                            <!-- Nav Item - Messages -->
+                            <li class="nav-item dropdown no-arrow mx-1">
+                                <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-envelope fa-fw"></i>
+                                    <!-- Counter - Messages -->
+                                    <span class="badge badge-danger badge-counter"></span>
+                                </a>
+                                <!-- Dropdown - Messages -->
+                                <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                    aria-labelledby="messagesDropdown">
+                                    <h6 class="dropdown-header">
+                                        Message Center
+                                    </h6>
+                                    <a class="dropdown-item text-center small text-gray-500" href="#">Ver todas as
+                                        mensagens</a>
+                                </div>
+                            </li>
+
+                            <div class="topbar-divider d-none d-sm-block"></div>
+
+                            <!-- Nav Item - User Information -->
+                            <li class="nav-item dropdown no-arrow">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ current_user.usuario }}
+                                    </span>
+                                </a>
+                                <!-- Dropdown - User Information -->
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                    aria-labelledby="userDropdown">
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Sair
+                                    </a>
+                                </div>
+                            </li>
+
+                        </ul>
+                </div>
+                </nav>
+                <!-- End of Topbar -->
+                <!-- Page Content -->
+                <div class="container-fluid">
+                    {% for rota, pedidos in pedidos_por_rota.items() %}
+                    <h2 class="titulo-{{ rota|replace(' ', '_') }}">{{ rota }}</h2>
+                    <table class="tabela-{{ rota|replace(' ', '_') }}">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Produto</th>
+                                <th>Data de Emissão</th>
+                                <th>Data de Entrega</th>
+                                <th>Quantidade</th>
+                                <th>Status</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pedido in pedidos %}
+                            <tr>
+                                <td>{{ pedido.id }}</td>
+                                <td>{{ pedido.nome_cliente }}</td>
+                                <td>{{ pedido.produto }}</td>
+                                <td>{{ pedido.data_emissao.strftime('%d/%m/%Y') }}</td>
+                                <td>{{ pedido.data_entrega.strftime('%d/%m/%Y') }}</td>
+                                <td>{{ pedido.quantidade }}</td>
+                                <td>{{ pedido.status }}</td>
+                                <td>
+                                    <form action="{{ url_for('marcar_entregue', pedido_id=pedido.id) }}" method="post">
+                                        <button type="submit">Pedido Entregue</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endfor %}
+
+                </div>
+                <!-- End of Page Content -->
+
+
+
+
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Desenvolvido por André Terto</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+                <!-- Scroll to Top Button-->
+                <a class="scroll-to-top rounded" href="#page-top">
+                    <i class="fas fa-angle-up"></i>
+                </a>
+            </div>
+            <!-- Logout Modal-->
+            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Deseja realmente sair?</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">Aperte em "Sair" para encerrar a sessão.</div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                            <a class="btn btn-primary" href="{{ url_for ('logout') }}">Sair</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="/static/vendor/jquery/jquery.min.js"></script>
+            <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    </body>
+
+</html>
